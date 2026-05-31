@@ -3,572 +3,256 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roman's Baby Shower — Guest List</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Poonam's Baby Shower — Guest List</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --terra:   #b5451b;
-  --terra-d: #8c3314;
-  --terra-l: #f5ebe4;
-  --terra-m: #e8d0c4;
-  --olive:   #5a6a2f;
-  --olive-l: #eef1e6;
-  --olive-m: #c6d0a8;
-  --gold:    #c49a2a;
-  --gold-l:  #faf3e0;
-  --parch:   #fdf8f1;
-  --parch-d: #f0e8d8;
-  --cream:   #fffdf9;
-  --ink:     #2c2416;
-  --muted:   #7a6a56;
-  --hint:    #b0a090;
-  --white:   #ffffff;
-  --radius:  12px;
-  --radius-sm: 7px;
-  --radius-lg: 20px;
-  --shadow:  0 2px 18px rgba(90,50,20,0.09);
-  --shadow-md: 0 8px 36px rgba(90,50,20,0.14);
+  --terra:#b5451b; --terra-d:#8c3314; --terra-l:#f5ebe4; --terra-m:#e8d0c4;
+  --olive:#5a6a2f; --olive-l:#eef1e6; --olive-m:#c6d0a8;
+  --gold:#c49a2a; --gold-l:#faf3e0;
+  --parch:#fdf8f1; --parch-d:#f0e8d8; --cream:#fffdf9;
+  --ink:#2c2416; --muted:#7a6a56; --hint:#b0a090;
+  --radius:12px; --radius-sm:7px; --radius-lg:20px;
+  --shadow:0 2px 18px rgba(90,50,20,0.09);
+  --shadow-md:0 8px 36px rgba(90,50,20,0.14);
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Jost', sans-serif;
-  background: var(--parch);
-  color: var(--ink);
-  min-height: 100vh;
-  padding-bottom: 80px;
-}
-
-/* Subtle texture overlay */
-body::before {
-  content: '';
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-  opacity: 0.5;
-}
-
-/* ── HEADER ── */
-.header {
-  background: var(--terra);
-  padding: 0;
-  position: sticky; top: 0; z-index: 50;
-  box-shadow: 0 2px 24px rgba(90,30,10,0.25);
-}
-.header-band {
-  background: var(--terra-d);
-  padding: 5px 20px;
-  text-align: center;
-  letter-spacing: 0.25em;
-  font-size: 9px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.65);
-  text-transform: uppercase;
-  font-family: 'Jost', sans-serif;
-}
-.header-main {
-  padding: 16px 20px 14px;
-  text-align: center;
-  position: relative;
-}
-.header-ornament {
-  font-size: 11px;
-  letter-spacing: 0.4em;
-  color: rgba(255,255,255,0.5);
-  text-transform: uppercase;
-  font-family: 'Jost', sans-serif;
-  font-weight: 300;
-  margin-bottom: 4px;
-}
-.header h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(22px, 5vw, 32px);
-  color: var(--white);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  line-height: 1.1;
-}
-.header h1 em {
-  font-style: italic;
-  color: #f5c98a;
-}
-.header-sub {
-  font-size: 11px;
-  color: rgba(255,255,255,0.6);
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 14px;
-  margin-top: 2px;
-}
-.header-divider {
-  width: 60px; height: 1px;
-  background: rgba(255,255,255,0.25);
-  margin: 8px auto 6px;
-}
-.sync-bar {
-  display: flex; align-items: center; justify-content: center;
-  gap: 6px; margin-top: 6px;
-  font-size: 10px; color: rgba(255,255,255,0.5);
-  font-family: 'Jost', sans-serif; letter-spacing: 0.05em;
-}
-.sync-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: rgba(255,255,255,0.3); flex-shrink: 0;
-  transition: background 0.3s;
-}
-.sync-dot.ok   { background: #6ee7a0; }
-.sync-dot.busy { background: #fcd34d; animation: pulse 1s infinite; }
-.sync-dot.err  { background: #f87171; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-/* ── SETUP SCREEN ── */
-#setup-screen { max-width: 480px; margin: 50px auto; padding: 0 16px; text-align: center; position: relative; z-index: 1; }
-.setup-card {
-  background: var(--cream);
-  border-radius: var(--radius-lg);
-  padding: 36px 30px;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--terra-m);
-  position: relative;
-  overflow: hidden;
-}
-.setup-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 4px;
-  background: linear-gradient(90deg, var(--terra), var(--gold), var(--terra));
-}
-.setup-card .laurel {
-  font-size: 28px; margin-bottom: 10px;
-  filter: sepia(0.3);
-}
-.setup-card h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 26px; color: var(--terra); margin-bottom: 6px; font-style: italic;
-}
-.setup-card .tagline {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 15px; color: var(--muted); margin-bottom: 20px; font-style: italic;
-}
-.setup-card p { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
-.setup-steps {
-  text-align: left; margin-bottom: 22px;
-  background: var(--terra-l);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-  counter-reset: step;
-}
-.setup-steps li {
-  font-size: 12px; color: var(--ink); padding: 5px 0 5px 24px;
-  list-style: none; position: relative; line-height: 1.4;
-  counter-increment: step;
-}
-.setup-steps li::before {
-  content: counter(step);
-  position: absolute; left: 0;
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--terra); color: white;
-  font-size: 9px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  top: 7px;
-}
-.inp-label { font-size: 10px; color: var(--muted); text-align: left; display: block; margin-bottom: 5px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
-.inp {
-  width: 100%; padding: 11px 14px;
-  border: 1.5px solid var(--terra-m);
-  border-radius: var(--radius-sm); font-size: 13px;
-  font-family: inherit; outline: none; background: var(--parch);
-  color: var(--ink); transition: border-color 0.15s; margin-bottom: 14px;
-}
-.inp:focus { border-color: var(--terra); }
-.inp::placeholder { color: var(--hint); }
-
-/* ── MAIN ── */
-#app-screen { display: none; position: relative; z-index: 1; }
-.wrap { max-width: 740px; margin: 0 auto; padding: 22px 14px 0; }
-
-/* ── STATS ── */
-.stats-row {
-  display: grid; grid-template-columns: repeat(5, 1fr);
-  gap: 8px; margin-bottom: 18px;
-}
-.stat {
-  background: var(--cream); border-radius: var(--radius-sm);
-  padding: 12px 6px; text-align: center; cursor: pointer;
-  border: 1.5px solid transparent; transition: all 0.15s;
-  box-shadow: var(--shadow);
-}
-.stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-.stat.active { border-color: currentColor; }
-.stat-n { font-size: 22px; font-weight: 700; line-height: 1; font-family: 'Playfair Display', serif; }
-.stat-l { font-size: 9px; margin-top: 2px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; }
-.s-all   { color: var(--terra); }
-.s-yes   { color: var(--olive); }
-.s-no    { color: #9b2a2a; }
-.s-maybe { color: var(--gold); }
-.s-pend  { color: var(--muted); }
-
-/* ── TOOLBAR ── */
-.toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.toolbar input {
-  flex: 1 1 160px; padding: 10px 14px;
-  border-radius: var(--radius-sm); border: 1.5px solid var(--terra-m);
-  font-size: 13px; font-family: inherit; outline: none;
-  background: var(--cream); color: var(--ink); min-width: 0;
-  transition: border-color 0.15s;
-}
-.toolbar input:focus { border-color: var(--terra); }
-.toolbar input::placeholder { color: var(--hint); }
-.btn {
-  padding: 10px 16px; border-radius: var(--radius-sm);
-  border: none; font-size: 12px; cursor: pointer;
-  font-family: 'Jost', sans-serif; white-space: nowrap;
-  font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
-  transition: opacity 0.15s, transform 0.1s;
-}
-.btn:hover { opacity: 0.88; }
-.btn:active { transform: scale(0.97); }
-.btn-terra  { background: var(--terra); color: white; }
-.btn-outline{ background: var(--cream); color: var(--terra); border: 1.5px solid var(--terra-m); }
-.btn-olive  { background: var(--olive-l); color: var(--olive); border: 1.5px solid var(--olive-m); }
-.btn-muted  { background: var(--parch-d); color: var(--muted); }
-
-/* ── FORM PANEL ── */
-.form-panel {
-  background: var(--cream); border-radius: var(--radius-lg);
-  padding: 22px; margin-bottom: 16px;
-  box-shadow: var(--shadow-md); border: 1px solid var(--terra-m);
-  animation: slideDown 0.2s ease;
-  position: relative; overflow: hidden;
-}
-.form-panel::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--terra), var(--gold), var(--terra));
-}
-@keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
-.form-panel h3 {
-  font-family: 'Playfair Display', serif;
-  color: var(--terra); font-size: 20px; font-style: italic;
-  margin-bottom: 16px;
-}
-.form-grid { display: grid; gap: 10px; }
-.form-row-3 { display: grid; grid-template-columns: 1fr 58px 84px; gap: 8px; }
-.form-actions { display: flex; gap: 8px; margin-top: 14px; }
-
-/* ── GUEST CARDS ── */
-.guest-list { display: flex; flex-direction: column; gap: 8px; }
-.guest-card {
-  background: var(--cream); border-radius: var(--radius);
-  padding: 14px 16px; border: 1px solid var(--terra-m);
-  display: flex; align-items: flex-start; gap: 12px;
-  transition: box-shadow 0.15s, transform 0.1s;
-  animation: fadeIn 0.25s ease;
-  position: relative;
-}
-.guest-card::before {
-  content: '';
-  position: absolute; left: 0; top: 10%; bottom: 10%;
-  width: 3px; border-radius: 0 3px 3px 0;
-  background: transparent; transition: background 0.2s;
-}
-.guest-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-.guest-card:hover::before { background: var(--terra); }
-@keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
-.avatar {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: var(--terra-l);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Playfair Display', serif; font-size: 18px;
-  color: var(--terra); font-weight: 700; flex-shrink: 0;
-  border: 1.5px solid var(--terra-m);
-}
-.guest-body { flex: 1; min-width: 0; }
-.guest-name-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-.guest-name { font-weight: 500; font-size: 14px; color: var(--ink); }
-.rsvp-pill {
-  font-size: 9px; padding: 2px 9px; border-radius: 20px;
-  font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase;
-}
-.pill-Yes    { background: var(--olive-l); color: var(--olive); border: 1px solid var(--olive-m); }
-.pill-No     { background: #fce8e8; color: #9b2a2a; border: 1px solid #f5c6c6; }
-.pill-Maybe  { background: var(--gold-l); color: #8a6200; border: 1px solid #e8d090; }
-.pill-Pending{ background: var(--parch-d); color: var(--muted); border: 1px solid #d8cfc4; }
-.guest-addr { font-size: 11px; color: var(--hint); margin-top: 4px; }
-.guest-note {
-  font-size: 12px; color: var(--terra); margin-top: 3px;
-  font-style: italic; font-family: 'Cormorant Garamond', serif;
-}
-.guest-meta { font-size: 10px; color: var(--hint); margin-top: 3px; letter-spacing: 0.02em; }
-.guest-actions { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; align-items: flex-end; }
-.rsvp-select {
-  font-size: 11px; border: 1px solid var(--terra-m); border-radius: 6px;
-  padding: 3px 6px; background: var(--parch); color: var(--terra);
-  font-family: inherit; cursor: pointer; outline: none;
-}
-.action-row { display: flex; gap: 4px; }
-.icon-btn { border: none; border-radius: 6px; padding: 5px 7px; cursor: pointer; font-size: 12px; line-height: 1; }
-.icon-btn-edit { background: var(--terra-l); color: var(--terra); }
-.icon-btn-del  { background: #fce8e8; color: #9b2a2a; }
-
-/* ── EMPTY ── */
-.empty { text-align: center; padding: 60px 20px; color: var(--hint); }
-.empty-icon { font-size: 44px; margin-bottom: 12px; filter: sepia(0.3); }
-.empty p { font-size: 16px; font-family: 'Cormorant Garamond', serif; font-style: italic; }
-
-/* ── FOOTER ── */
-.foot {
-  text-align: center; margin-top: 24px;
-  font-size: 12px; color: var(--hint);
-  font-family: 'Cormorant Garamond', serif; font-style: italic;
-  letter-spacing: 0.05em;
-}
-.foot-ornament { font-size: 18px; display: block; margin-bottom: 4px; filter: sepia(0.4); }
-
-/* ── MODAL ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(28,20,10,0.5); z-index: 200;
-  padding: 20px; overflow-y: auto;
-}
-.modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; padding-top: 60px; }
-.modal {
-  background: var(--cream); border-radius: var(--radius-lg);
-  padding: 28px; max-width: 440px; width: 100%;
-  box-shadow: 0 20px 60px rgba(60,20,0,0.22);
-  animation: slideDown 0.2s ease;
-  border: 1px solid var(--terra-m);
-  position: relative; overflow: hidden;
-}
-.modal::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--terra), var(--gold), var(--terra));
-}
-.modal h3 { font-family: 'Playfair Display', serif; color: var(--terra); font-size: 20px; margin-bottom: 8px; font-style: italic; }
-.modal p { font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.65; }
-.modal textarea {
-  width: 100%; height: 70px; border: 1.5px solid var(--terra-m);
-  border-radius: var(--radius-sm); padding: 10px; font-size: 11px;
-  font-family: monospace; resize: none; color: var(--ink);
-  outline: none; margin-bottom: 10px; background: var(--parch-d);
-}
-.modal-divider { border: none; border-top: 1px solid var(--terra-m); margin: 18px 0; }
-.modal-btns { display: flex; gap: 8px; }
-
-/* ── TOAST ── */
-#toast {
-  position: fixed; bottom: 28px; left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  background: var(--ink); color: var(--gold-l); padding: 10px 22px;
-  border-radius: var(--radius); font-size: 13px; z-index: 999;
-  transition: transform 0.3s ease; pointer-events: none;
-  white-space: nowrap; box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-  font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 14px;
-  border: 1px solid rgba(196,154,42,0.3);
-}
-#toast.show { transform: translateX(-50%) translateY(0); }
-
-/* ── LOADING ── */
-#loading-overlay {
-  position: fixed; inset: 0; background: rgba(253,248,241,0.92);
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; z-index: 300; gap: 14px;
-}
-#loading-overlay.hidden { display: none; }
-.spinner {
-  width: 36px; height: 36px; border-radius: 50%;
-  border: 3px solid var(--terra-m);
-  border-top-color: var(--terra);
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-#loading-overlay p {
-  font-size: 14px; color: var(--muted);
-  font-family: 'Cormorant Garamond', serif; font-style: italic;
-}
-
-/* ── RESPONSIVE ── */
-@media (max-width: 480px) {
-  .stats-row { grid-template-columns: repeat(3, 1fr); }
-  .form-row-3 { grid-template-columns: 1fr 50px 72px; }
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--parch);color:var(--ink);min-height:100vh;padding-bottom:80px;}
+.header{background:var(--terra);position:sticky;top:0;z-index:50;box-shadow:0 2px 24px rgba(90,30,10,0.25);}
+.header-band{background:var(--terra-d);padding:5px 20px;text-align:center;letter-spacing:.25em;font-size:9px;font-weight:500;color:rgba(255,255,255,.6);text-transform:uppercase;}
+.header-main{padding:16px 20px 14px;text-align:center;}
+.header h1{font-family:'Playfair Display',serif;font-size:clamp(22px,5vw,30px);color:#fff;font-weight:700;letter-spacing:.02em;}
+.header-sub{font-size:13px;color:rgba(255,255,255,.65);font-family:'Playfair Display',serif;font-style:italic;margin-top:2px;}
+.header-divider{width:50px;height:1px;background:rgba(255,255,255,.25);margin:8px auto 6px;}
+.sync-bar{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.05em;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);flex-shrink:0;transition:background .3s;}
+.sync-dot.ok{background:#6ee7a0;} .sync-dot.busy{background:#fcd34d;animation:pulse 1s infinite;} .sync-dot.err{background:#f87171;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.wrap{max-width:740px;margin:0 auto;padding:22px 14px 0;}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px;}
+.stat{background:var(--cream);border-radius:var(--radius-sm);padding:12px 6px;text-align:center;cursor:pointer;border:1.5px solid transparent;transition:all .15s;box-shadow:var(--shadow);}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.stat.active{border-color:currentColor;}
+.stat-n{font-size:22px;font-weight:700;line-height:1;font-family:'Playfair Display',serif;}
+.stat-l{font-size:9px;margin-top:2px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;}
+.s-all{color:var(--terra);} .s-yes{color:#15803d;} .s-no{color:#9b2a2a;} .s-maybe{color:#7c3aed;} .s-pend{color:var(--muted);}
+.toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.toolbar input{flex:1 1 160px;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--terra-m);font-size:13px;font-family:inherit;outline:none;background:var(--cream);color:var(--ink);min-width:0;transition:border-color .15s;}
+.toolbar input:focus{border-color:var(--terra);}
+.toolbar input::placeholder{color:var(--hint);}
+.btn{padding:10px 16px;border-radius:var(--radius-sm);border:none;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;font-weight:500;letter-spacing:.06em;text-transform:uppercase;transition:opacity .15s,transform .1s;}
+.btn:hover{opacity:.88;} .btn:active{transform:scale(.97);}
+.btn-terra{background:var(--terra);color:white;}
+.btn-outline{background:var(--cream);color:var(--terra);border:1.5px solid var(--terra-m);}
+.btn-muted{background:var(--parch-d);color:var(--muted);}
+.form-panel{background:var(--cream);border-radius:var(--radius-lg);padding:22px;margin-bottom:16px;box-shadow:var(--shadow-md);border:1px solid var(--terra-m);animation:slideDown .2s ease;position:relative;overflow:hidden;}
+.form-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--terra),var(--gold),var(--terra));}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.form-panel h3{font-family:'Playfair Display',serif;color:var(--terra);font-size:20px;font-style:italic;margin-bottom:16px;}
+.form-grid{display:grid;gap:10px;}
+.form-row-3{display:grid;grid-template-columns:1fr 58px 84px;gap:8px;}
+.form-actions{display:flex;gap:8px;margin-top:14px;}
+.inp{width:100%;padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--terra-m);font-size:13px;font-family:inherit;outline:none;background:var(--parch);color:var(--ink);transition:border-color .15s;}
+.inp:focus{border-color:var(--terra);}
+.inp::placeholder{color:var(--hint);}
+.guest-list{display:flex;flex-direction:column;gap:8px;}
+.guest-card{background:var(--cream);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--terra-m);display:flex;align-items:flex-start;gap:12px;transition:box-shadow .15s,transform .1s;animation:fadeIn .2s ease;position:relative;}
+.guest-card::before{content:'';position:absolute;left:0;top:10%;bottom:10%;width:3px;border-radius:0 3px 3px 0;background:transparent;transition:background .2s;}
+.guest-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);}
+.guest-card:hover::before{background:var(--terra);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--terra-l);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;color:var(--terra);font-weight:700;flex-shrink:0;border:1.5px solid var(--terra-m);}
+.guest-body{flex:1;min-width:0;}
+.guest-name-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.guest-name{font-weight:500;font-size:14px;color:var(--ink);}
+.rsvp-pill{font-size:9px;padding:2px 9px;border-radius:20px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;}
+.pill-Yes{background:var(--olive-l);color:var(--olive);border:1px solid var(--olive-m);}
+.pill-No{background:#fce8e8;color:#9b2a2a;border:1px solid #f5c6c6;}
+.pill-Maybe{background:var(--gold-l);color:#8a6200;border:1px solid #e8d090;}
+.pill-Pending{background:var(--parch-d);color:var(--muted);border:1px solid #d8cfc4;}
+.guest-addr{font-size:11px;color:var(--hint);margin-top:4px;}
+.guest-note{font-size:12px;color:var(--terra);margin-top:3px;font-style:italic;font-family:'Playfair Display',serif;}
+.guest-meta{font-size:10px;color:var(--hint);margin-top:3px;}
+.guest-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0;align-items:flex-end;}
+.rsvp-select{font-size:11px;border:1px solid var(--terra-m);border-radius:6px;padding:3px 6px;background:var(--parch);color:var(--terra);font-family:inherit;cursor:pointer;outline:none;}
+.action-row{display:flex;gap:4px;}
+.icon-btn{border:none;border-radius:6px;padding:5px 7px;cursor:pointer;font-size:12px;line-height:1;}
+.icon-btn-edit{background:var(--terra-l);color:var(--terra);}
+.icon-btn-del{background:#fce8e8;color:#9b2a2a;}
+.empty{text-align:center;padding:60px 20px;color:var(--hint);}
+.empty-icon{font-size:44px;margin-bottom:12px;}
+.empty p{font-size:16px;font-family:'Playfair Display',serif;font-style:italic;}
+.foot{text-align:center;margin-top:24px;font-size:12px;color:var(--hint);font-family:'Playfair Display',serif;font-style:italic;}
+.foot-ornament{font-size:18px;display:block;margin-bottom:4px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(28,20,10,.5);z-index:200;padding:20px;overflow-y:auto;}
+.modal-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding-top:60px;}
+.modal{background:var(--cream);border-radius:var(--radius-lg);padding:28px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(60,20,0,.22);animation:slideDown .2s ease;border:1px solid var(--terra-m);position:relative;overflow:hidden;}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--terra),var(--gold),var(--terra));}
+.modal h3{font-family:'Playfair Display',serif;color:var(--terra);font-size:20px;margin-bottom:8px;font-style:italic;}
+.modal p{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.65;}
+.modal textarea{width:100%;height:60px;border:1.5px solid var(--terra-m);border-radius:var(--radius-sm);padding:10px;font-size:11px;font-family:monospace;resize:none;color:var(--ink);outline:none;margin-bottom:10px;background:var(--parch-d);}
+.modal-btns{display:flex;gap:8px;}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--gold-l);padding:10px 22px;border-radius:var(--radius);font-size:14px;z-index:999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,.25);font-family:'Playfair Display',serif;font-style:italic;border:1px solid rgba(196,154,42,.3);}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#loading-overlay{position:fixed;inset:0;background:rgba(253,248,241,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:300;gap:14px;}
+#loading-overlay.hidden{display:none;}
+.spinner{width:36px;height:36px;border-radius:50%;border:3px solid var(--terra-m);border-top-color:var(--terra);animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading-overlay p{font-size:14px;color:var(--muted);font-family:'Playfair Display',serif;font-style:italic;}
+@media(max-width:480px){.stats-row{grid-template-columns:repeat(3,1fr);}.form-row-3{grid-template-columns:1fr 50px 72px;}}
 </style>
 </head>
 <body>
 
-<!-- Loading -->
 <div id="loading-overlay">
   <div class="spinner"></div>
   <p id="loading-msg">Loading your guest list…</p>
 </div>
 
-<!-- Header -->
 <header class="header">
-  <div class="header-band">Guest List &amp; RSVP Tracker</div>
+  <div class="header-band">Baby Shower · Orange, California</div>
   <div class="header-main">
     <h1>Poonam's Baby Shower</h1>
     <div class="header-divider"></div>
     <p class="header-sub">Celebrating Baby Roman 🌿</p>
     <div class="sync-bar">
       <div class="sync-dot" id="sync-dot"></div>
-      <span id="sync-label">Not connected</span>
+      <span id="sync-label">Connecting…</span>
     </div>
   </div>
 </header>
 
-</div>
-
-<!-- App -->
-<div id="app-screen">
-  <div class="wrap">
-    <div class="stats-row" id="stats-row"></div>
-    <div class="toolbar">
-      <input type="text" id="search-inp" placeholder="Search by name or city…" oninput="renderList()">
-      <button class="btn btn-terra" onclick="openForm()">+ Add Guest</button>
-      <button class="btn btn-outline" onclick="refreshData()">↻ Refresh</button>
-      <button class="btn btn-outline" onclick="openShare()">Share</button>
-    </div>
-
-    <div class="form-panel" id="form-panel" style="display:none">
-      <h3 id="form-title">New Guest</h3>
-      <div class="form-grid">
-        <input class="inp" id="f-name" placeholder="Full name *">
-        <input class="inp" id="f-addr" placeholder="Street address">
-        <div class="form-row-3">
-          <input class="inp" id="f-city" placeholder="City">
-          <input class="inp" id="f-state" placeholder="ST" maxlength="2">
-          <input class="inp" id="f-zip" placeholder="ZIP" maxlength="10">
-        </div>
-        <select class="inp" id="f-rsvp">
-          <option>Pending</option><option>Yes</option><option>No</option><option>Maybe</option>
-        </select>
-        <input class="inp" id="f-note" placeholder="Note (optional)">
-      </div>
-      <div class="form-actions">
-        <button class="btn btn-terra" style="flex:1" id="save-btn" onclick="saveGuest()">Save</button>
-        <button class="btn btn-muted" onclick="closeForm()">Cancel</button>
-      </div>
-    </div>
-
-    <div id="guest-list-wrap"></div>
+<div class="wrap" id="app">
+  <div class="stats-row" id="stats-row"></div>
+  <div class="toolbar">
+    <input type="text" id="search-inp" placeholder="Search by name or city…" oninput="renderList()">
+    <button class="btn btn-terra" onclick="openForm()">+ Add Guest</button>
+    <button class="btn btn-outline" onclick="refreshData()">↻ Refresh</button>
+    <button class="btn btn-outline" onclick="openShare()">Share</button>
   </div>
+  <div class="form-panel" id="form-panel" style="display:none">
+    <h3 id="form-title">New Guest</h3>
+    <div class="form-grid">
+      <input class="inp" id="f-name" placeholder="Full name *">
+      <input class="inp" id="f-addr" placeholder="Street address">
+      <div class="form-row-3">
+        <input class="inp" id="f-city" placeholder="City">
+        <input class="inp" id="f-state" placeholder="ST" maxlength="2">
+        <input class="inp" id="f-zip" placeholder="ZIP" maxlength="10">
+      </div>
+      <select class="inp" id="f-rsvp">
+        <option>Pending</option><option>Yes</option><option>No</option><option>Maybe</option>
+      </select>
+      <input class="inp" id="f-note" placeholder="Note (optional)">
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-terra" style="flex:1" id="save-btn" onclick="saveGuest()">Save</button>
+      <button class="btn btn-muted" onclick="closeForm()">Cancel</button>
+    </div>
+  </div>
+  <div id="guest-list-wrap"></div>
 </div>
 
-<!-- Share Modal -->
 <div class="modal-overlay" id="share-modal">
   <div class="modal">
-    <h3>Share this list</h3>
-    <p>Share your Google Sheet with your co-host — they open their copy of this app and paste your Sheet ID under "Change Sheet" below.</p>
-    <p style="font-weight:500;font-size:12px;color:var(--ink);margin-bottom:5px;">Your Sheet ID:</p>
-    <textarea id="share-text" readonly onclick="this.select()" style="height:50px;font-size:12px;"></textarea>
+    <h3>Share this app</h3>
+    <p>Send this link to your co-host. You're both connected to the same database — any changes either of you make show up for everyone instantly.</p>
+    <textarea id="share-text" readonly onclick="this.select()"></textarea>
     <div class="modal-btns">
-      <button class="btn btn-terra" style="flex:1" onclick="copyShare()">Copy</button>
+      <button class="btn btn-terra" style="flex:1" onclick="copyShare()">Copy Link</button>
       <button class="btn btn-muted" onclick="closeShare()">Close</button>
     </div>
-    <hr class="modal-divider">
-    <h3>Change Sheet</h3>
-    <p>Use a different spreadsheet — paste a Sheet ID your co-host shared with you.</p>
-    <input class="inp" id="new-sheet-inp" placeholder="Paste Sheet ID here">
-    <button class="btn btn-olive" style="width:100%" onclick="changeSheet()">Switch Sheet</button>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4pL2BGjs8csuZCgXWmbWHWx12VUyR04XmtoRtzU5QLKx0I5LbogA6M1w7jjwQZXnO/exec';
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSgHxJg-pmRAfDozFhYi0M1aBeew_4hpfsCvbRaKCJ5jSfkLYWhqey-Shz3zWL4LMz_bA0aPBfLRZCb/pub?gid=0&single=true&output=csv';
+const SUPABASE_URL = 'https://yvetxupykoabqpykqtzr.supabase.co';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2ZXR4dXB5a29hYnFweWtxdHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNTczMTcsImV4cCI6MjA5NTgzMzMxN30.99719clcsYoyGyHGtYvslYtPTiYUEbcRzmx11ErFIHU';
+const HEADERS = { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + ANON_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
 const RSVP_OPTS = ['Pending','Yes','No','Maybe'];
+const SEED = [
+  {id:'g_1780261772767',name:'Lourdes Guevara',address:'1774 N Kimbark Lane',city:'Orange',state:'CA',zip:'92866',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780261782771',name:'Michelle Guevara',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780261793001',name:'Flora Rodrigues',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780261800144',name:'Esther Garcia',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780261815939',name:'Lisette Deveraux + girls',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780261826198',name:'Annette Garcia',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780261834319',name:'Laura Garcia + girls',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780261841934',name:'Bibi Guevara',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780261848944',name:'Gisella Guevara',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780261949803',name:'Denise Goulart + girls',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262007749',name:'Samantha Guevara',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262015519',name:'Emily Guevara',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262022645',name:'Amanda Guevara',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262029172',name:'Natalie Guevara',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262039102',name:'Pamela Morales',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262045131',name:'Catalina Morales',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262053622',name:'Linda Circosta',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262064469',name:'Megha Mehta',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262070362',name:'Bhakti Joshi',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262077878',name:'Harshada Chaundkar',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262083836',name:'Dhwani Mandavia',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262236948',name:'Ankita Upreti',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262244544',name:'Marisol Lopez',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262249571',name:'Kara Fisher',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262256099',name:'Jillian Govea',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262283162',name:'Priscilla Castaneda',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262382386',name:'Ivanna Panova',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+  {id:'g_1780262399952',name:'Olivia S',address:'',city:'',state:'',zip:'',rsvp:'Pending',note:'',updated_by:'Poonam'},
+];
 
 let guests = [];
 let editingId = null;
 let activeFilter = 'All';
 let pollingInterval = null;
 
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function showToast(msg, dur=3000){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'), dur);
-}
-function setSync(state, label){
-  document.getElementById('sync-dot').className='sync-dot '+(state||'');
-  document.getElementById('sync-label').textContent=label||'';
-}
-function showLoading(msg){
-  document.getElementById('loading-msg').textContent=msg||'Loading…';
-  document.getElementById('loading-overlay').classList.remove('hidden');
-}
-function hideLoading(){ document.getElementById('loading-overlay').classList.add('hidden'); }
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showToast(msg,dur=3000){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),dur);}
+function setSync(state,label){document.getElementById('sync-dot').className='sync-dot '+(state||'');document.getElementById('sync-label').textContent=label||'';}
+function showLoading(msg){document.getElementById('loading-msg').textContent=msg||'Loading…';document.getElementById('loading-overlay').classList.remove('hidden');}
+function hideLoading(){document.getElementById('loading-overlay').classList.add('hidden');}
 
-// Read guests from public CSV
-async function readFromCSV() {
-  const res = await fetch(CSV_URL + '&t=' + Date.now());
-  const text = await res.text();
-  const lines = text.trim().split('\n');
-  if (lines.length <= 1) return [];
-  const headers = lines[0].split(',').map(h => h.replace(/"/g,'').trim());
-  return lines.slice(1).map(line => {
-    // Handle quoted CSV values
-    const vals = [];
-    let cur = '', inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      if (line[i] === '"') { inQ = !inQ; }
-      else if (line[i] === ',' && !inQ) { vals.push(cur); cur = ''; }
-      else { cur += line[i]; }
-    }
-    vals.push(cur);
-    const g = {};
-    headers.forEach((h, i) => { g[h] = (vals[i] || '').trim(); });
-    return g;
-  }).filter(g => g.id);
-}
-
-// Write to Apps Script via JSONP
-function writeToScript(params) {
-  return new Promise((resolve, reject) => {
-    const cbName = 'cb_' + Date.now();
-    const url = new URL(SCRIPT_URL);
-    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, typeof v === 'object' ? JSON.stringify(v) : v));
-    url.searchParams.set('callback', cbName);
-    const script = document.createElement('script');
-    const timer = setTimeout(() => {
-      cleanup(); resolve({ ok: true }); // optimistic — don't block UI
-    }, 10000);
-    function cleanup() {
-      clearTimeout(timer); delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-    window[cbName] = (data) => { cleanup(); resolve(data); };
-    script.onerror = () => { cleanup(); resolve({ ok: true }); };
-    script.src = url.toString();
-    document.head.appendChild(script);
+async function db(method, path, body) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    method, headers: HEADERS,
+    body: body ? JSON.stringify(body) : undefined
   });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }
 
 async function initApp() {
   showLoading('Loading your guest list…');
-  document.getElementById('setup-screen').style.display = 'none';
-  document.getElementById('app-screen').style.display = 'none';
   try {
-    guests = await readFromCSV();
-    document.getElementById('app-screen').style.display = 'block';
+    // Try to fetch from Supabase
+    const rows = await db('GET', 'guests?order=name.asc');
+    if (rows.length === 0) {
+      // First time — seed the data
+      showLoading('Setting up your guest list…');
+      await db('POST', 'guests', SEED);
+      guests = await db('GET', 'guests?order=name.asc');
+    } else {
+      guests = rows;
+    }
+    setSync('ok', 'Connected · syncs in real time');
+    hideLoading();
     render();
     startPolling();
-    hideLoading();
-    setSync('ok', 'Synced');
   } catch(e) {
     hideLoading();
-    document.getElementById('setup-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display = 'block';
-    render();
+    setSync('err', 'Could not connect');
     document.getElementById('guest-list-wrap').innerHTML = `
       <div class="empty">
         <div class="empty-icon">⚠️</div>
-        <p style="color:#9b2a2a">Could not load guest list.</p>
-        <p style="font-size:12px; margin-top:8px; color:#7a6a56">` + e.message + `</p>
+        <p style="color:#9b2a2a; font-style:normal; font-size:13px;">${esc(e.message)}</p>
         <button class="btn btn-terra" style="margin-top:16px" onclick="initApp()">Try Again</button>
       </div>`;
-    setSync('err', 'Not connected');
   }
 }
 
@@ -576,71 +260,74 @@ function startPolling() {
   if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(async () => {
     try {
-      const incoming = await readFromCSV();
-      if (JSON.stringify(incoming) !== JSON.stringify(guests)) {
-        guests = incoming; render();
+      const rows = await db('GET', 'guests?order=name.asc');
+      if (JSON.stringify(rows) !== JSON.stringify(guests)) {
+        guests = rows; render();
       }
-    } catch(e) {}
-  }, 20000);
+      setSync('ok', 'Connected · syncs in real time');
+    } catch(e) { setSync('err', 'Connection lost'); }
+  }, 15000);
 }
 
 async function refreshData() {
-  setSync('busy','Refreshing…');
+  setSync('busy', 'Refreshing…');
   try {
-    guests = await readFromCSV(); render();
-    showToast('Guest list refreshed ✓');
-    setSync('ok','Synced');
-  } catch(e) { showToast('Refresh failed — check your connection'); setSync('err','Sync failed'); }
+    guests = await db('GET', 'guests?order=name.asc');
+    render(); showToast('Guest list refreshed ✓');
+    setSync('ok', 'Connected · syncs in real time');
+  } catch(e) { showToast('Refresh failed'); setSync('err', 'Connection lost'); }
 }
 
 async function saveGuest() {
   const name = document.getElementById('f-name').value.trim();
   if (!name) { document.getElementById('f-name').focus(); return; }
   const g = {
-    id: editingId || ('g_'+Date.now()),
+    id: editingId || ('g_' + Date.now()),
     name, address: document.getElementById('f-addr').value.trim(),
     city: document.getElementById('f-city').value.trim(),
     state: document.getElementById('f-state').value.trim().toUpperCase(),
     zip: document.getElementById('f-zip').value.trim(),
     rsvp: document.getElementById('f-rsvp').value,
     note: document.getElementById('f-note').value.trim(),
-    updatedBy: 'Poonam', updatedAt: new Date().toISOString()
+    updated_by: 'Poonam',
+    updated_at: new Date().toISOString()
   };
-  if (editingId) { guests = guests.map(x => x.id===editingId ? g : x); }
-  else { guests = [...guests, g]; }
   const wasEditing = editingId;
-  closeForm(); render();
-  showLoading(wasEditing ? 'Saving changes…' : 'Adding guest…');
+  closeForm();
+  setSync('busy', 'Saving…');
   try {
-    writeToScript({ action: 'upsert', guest: g }); // fire and forget
-    hideLoading();
-    showToast(wasEditing ? `${name} updated ✓` : `${name} added ✓`);
-  } catch(e) { hideLoading(); showToast('Save failed — please retry'); }
-  editingId = null;
+    if (wasEditing) {
+      await db('PATCH', `guests?id=eq.${g.id}`, g);
+    } else {
+      await db('POST', 'guests', g);
+    }
+    guests = await db('GET', 'guests?order=name.asc');
+    render(); showToast(wasEditing ? `${name} updated ✓` : `${name} added ✓`);
+    setSync('ok', 'Connected · syncs in real time');
+  } catch(e) { showToast('Save failed — ' + e.message); setSync('err', 'Save failed'); }
 }
 
 async function deleteGuest(id) {
   if (!confirm('Remove this guest from the list?')) return;
   const name = (guests.find(g=>g.id===id)||{}).name||'Guest';
-  guests = guests.filter(g => g.id!==id); render();
-  showLoading('Removing…');
+  setSync('busy', 'Removing…');
   try {
-    writeToScript({ action: 'delete', id }); // fire and forget
-    hideLoading();
-    showToast(`${name} removed`);
-  } catch(e) { hideLoading(); showToast('Delete failed — please refresh'); }
+    await db('DELETE', `guests?id=eq.${id}`);
+    guests = await db('GET', 'guests?order=name.asc');
+    render(); showToast(`${name} removed`);
+    setSync('ok', 'Connected · syncs in real time');
+  } catch(e) { showToast('Delete failed'); setSync('err', 'Delete failed'); }
 }
 
 async function changeRsvp(id, rsvp) {
   const guest = guests.find(g=>g.id===id);
   if (!guest) return;
-  const updated = {...guest, rsvp, updatedBy:'Poonam', updatedAt:new Date().toISOString()};
-  guests = guests.map(g => g.id===id ? updated : g);
+  guests = guests.map(g => g.id===id ? {...g, rsvp} : g);
   render();
   try {
-    writeToScript({ action: 'upsert', guest: updated });
+    await db('PATCH', `guests?id=eq.${id}`, {rsvp, updated_by:'Poonam', updated_at: new Date().toISOString()});
     showToast(`${guest.name} → ${rsvp}`);
-  } catch(e) { showToast('RSVP update failed — please refresh'); }
+  } catch(e) { showToast('Update failed'); }
 }
 
 function openForm(id=null) {
@@ -648,23 +335,22 @@ function openForm(id=null) {
   const g = id ? guests.find(x=>x.id===id) : null;
   document.getElementById('form-title').textContent = g ? 'Edit Guest' : 'New Guest';
   document.getElementById('save-btn').textContent = g ? 'Save Changes' : 'Save';
-  ['name','addr','city','state','zip','note'].forEach(k => {
-    const map = {name:'name',addr:'address',city:'city',state:'state',zip:'zip',note:'note'};
-    document.getElementById('f-'+k).value = g?.[map[k]]||'';
-  });
-  document.getElementById('f-rsvp').value = g?.rsvp||'Pending';
+  document.getElementById('f-name').value  = g?.name    || '';
+  document.getElementById('f-addr').value  = g?.address || '';
+  document.getElementById('f-city').value  = g?.city    || '';
+  document.getElementById('f-state').value = g?.state   || '';
+  document.getElementById('f-zip').value   = g?.zip     || '';
+  document.getElementById('f-rsvp').value  = g?.rsvp    || 'Pending';
+  document.getElementById('f-note').value  = g?.note    || '';
   document.getElementById('form-panel').style.display = 'block';
   setTimeout(()=>document.getElementById('f-name').focus(), 60);
 }
-function closeForm() {
-  editingId = null;
-  document.getElementById('form-panel').style.display = 'none';
-}
+function closeForm() { editingId=null; document.getElementById('form-panel').style.display='none'; }
 
 function render() { renderStats(); renderList(); }
 
 function renderStats() {
-  const c = { All: guests.length };
+  const c = {All:guests.length};
   RSVP_OPTS.forEach(r => c[r] = guests.filter(g=>g.rsvp===r).length);
   const items = [
     {key:'All',label:'Total',cls:'s-all'},
@@ -680,25 +366,23 @@ function renderStats() {
     </div>`).join('');
 }
 
-function setFilter(f) { activeFilter=f; renderStats(); renderList(); }
+function setFilter(f){activeFilter=f;renderStats();renderList();}
 
 function renderList() {
-  const q = (document.getElementById('search-inp')||{value:''}).value.toLowerCase();
-  const filtered = guests.filter(g => {
-    const ms = g.name.toLowerCase().includes(q)||(g.city||'').toLowerCase().includes(q)||(g.address||'').toLowerCase().includes(q);
-    return ms && (activeFilter==='All'||g.rsvp===activeFilter);
+  const q=(document.getElementById('search-inp')||{value:''}).value.toLowerCase();
+  const filtered=guests.filter(g=>{
+    const ms=g.name.toLowerCase().includes(q)||(g.city||'').toLowerCase().includes(q)||(g.address||'').toLowerCase().includes(q);
+    return ms&&(activeFilter==='All'||g.rsvp===activeFilter);
   });
-  const wrap = document.getElementById('guest-list-wrap');
-  if (!wrap) return;
-  if (filtered.length===0) {
-    wrap.innerHTML=`<div class="empty">
-      <div class="empty-icon">🏺</div>
-      <p>${guests.length===0?'No guests yet — add your first one!':'No guests match your search.'}</p>
-    </div>`; return;
+  const wrap=document.getElementById('guest-list-wrap');
+  if(!wrap)return;
+  if(filtered.length===0){
+    wrap.innerHTML=`<div class="empty"><div class="empty-icon">🏺</div><p>${guests.length===0?'No guests yet — add your first one!':'No guests match your search.'}</p></div>`;
+    return;
   }
   wrap.innerHTML=`<div class="guest-list">`+filtered.map(g=>{
     const addr=[g.address,g.city,g.state,g.zip].filter(Boolean).join(', ');
-    const updated=g.updatedAt?new Date(g.updatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+    const updated=g.updated_at?new Date(g.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
     return `<div class="guest-card">
       <div class="avatar">${esc(g.name).charAt(0).toUpperCase()}</div>
       <div class="guest-body">
@@ -708,7 +392,7 @@ function renderList() {
         </div>
         ${addr?`<div class="guest-addr">📍 ${esc(addr)}</div>`:''}
         ${g.note?`<div class="guest-note">"${esc(g.note)}"</div>`:''}
-        ${g.updatedBy?`<div class="guest-meta">Updated by ${esc(g.updatedBy)}${updated?' · '+updated:''}</div>`:''}
+        ${g.updated_by?`<div class="guest-meta">Updated by ${esc(g.updated_by)}${updated?' · '+updated:''}</div>`:''}
       </div>
       <div class="guest-actions">
         <select class="rsvp-select" onchange="changeRsvp('${g.id}',this.value)">
@@ -721,27 +405,19 @@ function renderList() {
       </div>
     </div>`;
   }).join('')+`</div>
-  <div class="foot">
-    <span class="foot-ornament">🫒</span>
-    ${guests.length} ${guests.length===1?'guest':'guests'} on the list
-  </div>`;
+  <div class="foot"><span class="foot-ornament">🫒</span>${guests.length} ${guests.length===1?'guest':'guests'} on the list</div>`;
 }
 
-function openShare(){
-  document.getElementById('share-text').value = window.location.href;
-  document.getElementById('share-modal').classList.add('open');
-}
-function closeShare(){ document.getElementById('share-modal').classList.remove('open'); }
-function copyShare(){
-  const t=document.getElementById('share-text');
-  t.select(); navigator.clipboard.writeText(t.value).catch(()=>document.execCommand('copy'));
-  showToast('Link copied — share it with your co-host 🌸');
-}
+function openShare(){document.getElementById('share-text').value=window.location.href;document.getElementById('share-modal').classList.add('open');}
+function closeShare(){document.getElementById('share-modal').classList.remove('open');}
+function copyShare(){const t=document.getElementById('share-text');t.select();navigator.clipboard.writeText(t.value).catch(()=>document.execCommand('copy'));showToast('Link copied — share it with your co-host 🌸');}
 
-document.addEventListener('keydown', e => {
-  if(e.key==='Escape'){ closeForm(); closeShare(); }
-  if(e.key==='Enter' && document.getElementById('form-panel').style.display!=='none' && document.activeElement.id!=='f-note') saveGuest();
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeForm();closeShare();}
+  if(e.key==='Enter'&&document.getElementById('form-panel').style.display!=='none'&&document.activeElement.id!=='f-note')saveGuest();
 });
 
 initApp();
 </script>
+</body>
+</html>
