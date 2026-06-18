@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSVP — Poonam's Baby Shower</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --terra:#c1572a; --terra-l:#fdf0e8; --terra-m:#e8d0c0;
+  --olive:#4a5e35; --olive-l:#eef1e6; --olive-m:#c6d0a8;
+  --gold:#c49a2a; --gold-l:#faf3e0;
+  --parch:#faf6f0; --linen:#f0ebe0; --linen-d:#e4ddd0;
+  --cream:#fffcf7; --ink:#2c2416; --muted:#7a6a56; --hint:#b0a090;
+  --radius:12px; --radius-sm:7px; --radius-lg:24px;
+  --shadow:0 4px 24px rgba(90,50,20,0.10);
+  --shadow-md:0 12px 48px rgba(90,50,20,0.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Jost',sans-serif;background:var(--parch);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:32px 16px 60px;}
+.olive-top{text-align:center;font-size:32px;margin-bottom:12px;opacity:.85;}
+.card{background:var(--cream);border-radius:var(--radius-lg);padding:40px 32px;max-width:440px;width:100%;box-shadow:var(--shadow-md);border:1px solid var(--linen-d);position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--terra),var(--gold),var(--olive));}
+.eyebrow{font-size:10px;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--olive);text-align:center;margin-bottom:10px;}
+.title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,7vw,38px);color:var(--ink);text-align:center;line-height:1.15;font-weight:600;}
+.title em{font-style:italic;color:var(--terra);}
+.subtitle{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.5;}
+.divider{width:48px;height:1px;background:var(--terra);opacity:.4;margin:20px auto;}
+.welcome{font-size:14px;color:var(--muted);text-align:center;line-height:1.7;margin-bottom:28px;}
+.step{display:none;}
+.step.active{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.field-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;}
+.inp{width:100%;padding:13px 16px;border:1.5px solid var(--linen-d);border-radius:var(--radius-sm);font-size:15px;font-family:'Jost',sans-serif;outline:none;background:var(--parch);color:var(--ink);transition:border-color .15s;margin-bottom:4px;}
+.inp:focus{border-color:var(--terra);}
+.inp::placeholder{color:var(--hint);}
+.suggestions{background:var(--cream);border:1.5px solid var(--terra-m);border-radius:var(--radius-sm);overflow:hidden;margin-top:4px;display:none;box-shadow:var(--shadow);}
+.suggestion{padding:12px 16px;font-size:14px;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--linen-d);}
+.suggestion:last-child{border-bottom:none;}
+.suggestion:hover{background:var(--terra-l);}
+.suggestion strong{color:var(--terra);}
+.rsvp-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0;}
+.rsvp-option{border:1.5px solid var(--linen-d);border-radius:var(--radius-sm);padding:16px 8px;text-align:center;cursor:pointer;transition:all .15s;background:var(--parch);}
+.rsvp-option:hover{border-color:var(--terra);background:var(--terra-l);}
+.rsvp-option.selected{border-color:var(--terra);background:var(--terra-l);}
+.rsvp-option.selected.no{border-color:#9b2a2a;background:#fce8e8;}
+.rsvp-option.selected.maybe{border-color:var(--olive);background:var(--olive-l);}
+.rsvp-icon{font-size:24px;margin-bottom:6px;}
+.rsvp-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.rsvp-option.selected .rsvp-label{color:var(--terra);}
+.rsvp-option.selected.no .rsvp-label{color:#9b2a2a;}
+.rsvp-option.selected.maybe .rsvp-label{color:var(--olive);}
+
+/* PARTY SIZE */
+.party-size-wrap{margin:16px 0;display:none;}
+.party-size-label{font-size:13px;color:var(--muted);margin-bottom:10px;}
+.party-size-options{display:flex;gap:8px;flex-wrap:wrap;}
+.party-size-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--linen-d);background:var(--parch);font-size:15px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;font-family:'Jost',sans-serif;color:var(--muted);}
+.party-size-btn:hover{border-color:var(--terra);color:var(--terra);}
+.party-size-btn.selected{border-color:var(--terra);background:var(--terra);color:white;}
+
+.btn{width:100%;padding:14px;border:none;border-radius:var(--radius-sm);font-size:13px;font-family:'Jost',sans-serif;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity .15s,transform .1s;margin-top:8px;}
+.btn:hover{opacity:.88;}
+.btn:active{transform:scale(.98);}
+.btn-terra{background:var(--terra);color:white;}
+.btn-outline{background:transparent;color:var(--terra);border:1.5px solid var(--terra-m);}
+textarea.inp{resize:none;height:90px;line-height:1.5;}
+.confirm-icon{font-size:52px;text-align:center;margin-bottom:16px;}
+.confirm-title{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--ink);text-align:center;font-weight:600;margin-bottom:8px;}
+.confirm-msg{font-size:14px;color:var(--muted);text-align:center;line-height:1.7;}
+.confirm-name{color:var(--terra);font-weight:500;}
+.not-found{background:var(--linen);border-radius:var(--radius-sm);padding:16px;text-align:center;margin-top:12px;display:none;}
+.not-found p{font-size:13px;color:var(--muted);line-height:1.6;}
+.error-msg{font-size:12px;color:#9b2a2a;margin-top:6px;display:none;}
+.spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--linen-d);border-top-color:var(--terra);animation:spin .7s linear infinite;margin:20px auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.page-foot{margin-top:24px;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--hint);}
+</style>
+</head>
+<body>
+
+<div class="olive-top">🫒</div>
+
+<div class="card">
+  <div class="eyebrow">You're invited</div>
+  <h1 class="title">A Baby Shower<br><em>for Poonam</em></h1>
+  <p class="subtitle">Join us as we celebrate Poonam</p>
+  <div class="divider"></div>
+
+  <!-- STEP 1: Find name -->
+  <div class="step active" id="step-1">
+    <p class="welcome">We're so excited to celebrate Poonam and her growing family. Please let us know if you'll be able to join us — we'd love to have you there.</p>
+    <label class="field-label" for="name-inp">Your name</label>
+    <input class="inp" id="name-inp" placeholder="Start typing your name…" autocomplete="off" oninput="searchGuest(this.value)">
+    <div class="error-msg" id="name-error">Please enter your name to continue.</div>
+    <div class="suggestions" id="suggestions"></div>
+    <div class="not-found" id="not-found">
+      <p>We couldn't find your name on our list. Please double-check the spelling or reach out to Poonam directly 🌿</p>
+    </div>
+  </div>
+
+  <!-- STEP 2: RSVP -->
+  <div class="step" id="step-2">
+    <p style="font-size:15px;color:var(--muted);margin-bottom:4px">Hi <strong id="guest-name-display" style="color:var(--ink)"></strong> 👋</p>
+    <p style="font-size:14px;color:var(--muted);line-height:1.6">Will you be joining us to celebrate Poonam?</p>
+    <div class="rsvp-options">
+      <div class="rsvp-option" id="opt-yes" onclick="selectRsvp('Yes')">
+        <div class="rsvp-icon">🎉</div>
+        <div class="rsvp-label">Yes!</div>
+      </div>
+      <div class="rsvp-option maybe" id="opt-maybe" onclick="selectRsvp('Maybe')">
+        <div class="rsvp-icon">🤔</div>
+        <div class="rsvp-label">Maybe</div>
+      </div>
+      <div class="rsvp-option no" id="opt-no" onclick="selectRsvp('No')">
+        <div class="rsvp-icon">😢</div>
+        <div class="rsvp-label">Can't make it</div>
+      </div>
+    </div>
+
+    <!-- Party size — only shown if max_guests > 1 and rsvp is Yes/Maybe -->
+    <div class="party-size-wrap" id="party-size-wrap">
+      <p class="party-size-label">How many in your party?</p>
+      <div class="party-size-options" id="party-size-options"></div>
+    </div>
+
+    <div style="margin-top:16px">
+      <label class="field-label" for="note-inp">Leave a note <span style="opacity:.6">(optional)</span></label>
+      <textarea class="inp" id="note-inp" placeholder="A message, a dietary note, or anything you'd like Janae to know…"></textarea>
+    </div>
+    <div class="error-msg" id="rsvp-error">Please select an option above.</div>
+    <button class="btn btn-terra" onclick="submitRsvp()">Send my RSVP 🌿</button>
+    <button class="btn btn-outline" onclick="goBack()" style="margin-top:6px">← That's not me</button>
+  </div>
+
+  <!-- STEP 3: Confirmation -->
+  <div class="step" id="step-3">
+    <div class="confirm-icon" id="confirm-icon">🎉</div>
+    <div class="confirm-title" id="confirm-title">See you there!</div>
+    <p class="confirm-msg" id="confirm-msg"></p>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading" style="display:none"><div class="spinner"></div></div>
+</div>
+
+<p class="page-foot">With so much love, Janae 🌿</p>
+
+<script>
+const SB = 'https://yvetxupykoabqpykqtzr.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2ZXR4dXB5a29hYnFweWtxdHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNTczMTcsImV4cCI6MjA5NTgzMzMxN30.99719clcsYoyGyHGtYvslYtPTiYUEbcRzmx11ErFIHU';
+const H = {'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'};
+
+let allGuests = [];
+let selectedGuest = null;
+let selectedRsvp = null;
+let selectedCount = 1;
+let searchTimer = null;
+
+async function db(method, path, body) {
+  const res = await fetch(SB+'/rest/v1/'+path, {method, headers:H, body:body?JSON.stringify(body):undefined});
+  const t = await res.text();
+  return t ? JSON.parse(t) : null;
+}
+
+async function init() {
+  try {
+    allGuests = await db('GET', 'guests?order=name.asc') || [];
+  } catch(e) { console.error('Could not load guests', e); }
+}
+
+function normalize(s) { return (s||'').toLowerCase().trim(); }
+
+function fuzzyMatch(query, name) {
+  const q = normalize(query);
+  const n = normalize(name);
+  if (!q) return false;
+  if (n.startsWith(q)) return true;
+  if (n.split(' ').some(function(w){ return w.startsWith(q); })) return true;
+  if (n.includes(q)) return true;
+  return false;
+}
+
+function searchGuest(val) {
+  clearTimeout(searchTimer);
+  var notFound = document.getElementById('not-found');
+  var sugg = document.getElementById('suggestions');
+  notFound.style.display = 'none';
+  sugg.style.display = 'none';
+  if (!val.trim() || val.trim().length < 2) return;
+
+  searchTimer = setTimeout(function() {
+    var matches = allGuests.filter(function(g){ return fuzzyMatch(val, g.name); });
+    if (!matches.length) {
+      notFound.style.display = 'block';
+      return;
+    }
+    sugg.innerHTML = matches.slice(0,5).map(function(g) {
+      var esc = g.name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      var highlighted = esc.replace(new RegExp('('+val.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')', 'gi'), '<strong>$1</strong>');
+      return '<div class="suggestion" onclick="selectGuest(\''+g.id+'\')">'+highlighted+'</div>';
+    }).join('');
+    sugg.style.display = 'block';
+  }, 200);
+}
+
+function selectGuest(id) {
+  selectedGuest = allGuests.find(function(g){ return g.id === id; });
+  if (!selectedGuest) return;
+  document.getElementById('suggestions').style.display = 'none';
+  document.getElementById('name-inp').value = selectedGuest.name;
+  document.getElementById('not-found').style.display = 'none';
+  selectedCount = 1;
+
+  if (selectedGuest.rsvp && selectedGuest.rsvp !== 'Pending') {
+    selectRsvp(selectedGuest.rsvp);
+  }
+  if (selectedGuest.note) {
+    document.getElementById('note-inp').value = selectedGuest.note;
+  }
+  if (selectedGuest.guest_count > 1) {
+    selectedCount = selectedGuest.guest_count;
+  }
+
+  showStep(2);
+  document.getElementById('guest-name-display').textContent = selectedGuest.name.split(' ')[0];
+}
+
+function selectRsvp(val) {
+  selectedRsvp = val;
+  ['yes','maybe','no'].forEach(function(k){
+    document.getElementById('opt-'+k).classList.remove('selected');
+  });
+  document.getElementById('opt-'+val.toLowerCase()).classList.add('selected');
+  document.getElementById('rsvp-error').style.display = 'none';
+
+  // Show party size if Yes or Maybe and max > 1
+  var maxGuests = parseInt(selectedGuest.max_guests) || 1;
+  var wrap = document.getElementById('party-size-wrap');
+  if ((val === 'Yes' || val === 'Maybe') && maxGuests > 1) {
+    renderPartySizeOptions(maxGuests);
+    wrap.style.display = 'block';
+  } else {
+    wrap.style.display = 'none';
+    selectedCount = (val === 'No') ? 0 : 1;
+  }
+}
+
+function renderPartySizeOptions(max) {
+  var opts = document.getElementById('party-size-options');
+  var html = '';
+  for (var i = 1; i <= max; i++) {
+    var sel = i === selectedCount ? ' selected' : '';
+    html += '<button class="party-size-btn'+sel+'" onclick="selectPartySize('+i+')">'+i+'</button>';
+  }
+  opts.innerHTML = html;
+}
+
+function selectPartySize(n) {
+  selectedCount = n;
+  document.querySelectorAll('.party-size-btn').forEach(function(btn, i){
+    btn.classList.toggle('selected', i+1 === n);
+  });
+}
+
+async function submitRsvp() {
+  if (!selectedRsvp) {
+    document.getElementById('rsvp-error').style.display = 'block';
+    return;
+  }
+  var note = document.getElementById('note-inp').value.trim();
+  showLoading(true);
+  try {
+    await db('PATCH', 'guests?id=eq.'+selectedGuest.id, {
+      rsvp: selectedRsvp,
+      note: note,
+      guest_count: selectedRsvp === 'No' ? 0 : selectedCount,
+      updated_by: selectedGuest.name,
+      updated_at: new Date().toISOString()
+    });
+    showLoading(false);
+    showConfirmation();
+  } catch(e) {
+    showLoading(false);
+    alert('Something went wrong — please try again.');
+  }
+}
+
+function showConfirmation() {
+  var firstName = selectedGuest.name.split(' ')[0];
+  var msgs = {
+    'Yes': {
+      icon: '🎉',
+      title: 'See you there!',
+      msg: 'We\'re so excited to celebrate with you, <span class="confirm-name">'+firstName+'</span>!'+(selectedCount>1?' We\'ll see your party of '+selectedCount+' there.':'')+' It means so much to have you with us. 🌿'
+    },
+    'No': {
+      icon: '💌',
+      title: 'We\'ll miss you!',
+      msg: 'Thank you for letting us know, <span class="confirm-name">'+firstName+'</span>. We\'ll be thinking of you and will make sure to share photos of the day. 🌿'
+    },
+    'Maybe': {
+      icon: '🤞',
+      title: 'Fingers crossed!',
+      msg: 'We hope you can make it, <span class="confirm-name">'+firstName+'</span>! Either way, thank you so much for letting us know. 🌿'
+    }
+  };
+  var m = msgs[selectedRsvp];
+  document.getElementById('confirm-icon').textContent = m.icon;
+  document.getElementById('confirm-title').textContent = m.title;
+  document.getElementById('confirm-msg').innerHTML = m.msg;
+  showStep(3);
+}
+
+function goBack() {
+  selectedGuest = null;
+  selectedRsvp = null;
+  selectedCount = 1;
+  document.getElementById('name-inp').value = '';
+  document.getElementById('note-inp').value = '';
+  document.getElementById('party-size-wrap').style.display = 'none';
+  ['yes','maybe','no'].forEach(function(k){
+    document.getElementById('opt-'+k).classList.remove('selected');
+  });
+  showStep(1);
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(function(el,i){
+    el.classList.toggle('active', i === n-1);
+  });
+}
+
+function showLoading(show) {
+  document.getElementById('loading').style.display = show ? 'block' : 'none';
+  document.getElementById('step-2').style.display = show ? 'none' : 'block';
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#name-inp') && !e.target.closest('#suggestions')) {
+    document.getElementById('suggestions').style.display = 'none';
+  }
+});
+
+document.getElementById('name-inp').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    var first = document.querySelector('.suggestion');
+    if (first) first.click();
+  }
+});
+
+init();
+</script>
+</body>
+</html>
