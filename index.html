@@ -237,14 +237,6 @@ select.inp{cursor:pointer;}
 .lightbox-caption { color: rgba(255,255,255,.8); font-size: 14px; font-family: 'Cormorant Garamond', serif; font-style: italic; text-align: center; margin-top: 10px; }
 .lightbox-close { position: absolute; top: -14px; right: -14px; background: var(--terra); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-/* INLINE EDIT */
-.card.editing { border-color: var(--terra); box-shadow: var(--shadow-md); }
-.inline-edit { padding: 10px 0 4px; display: grid; gap: 8px; }
-.inline-edit-row { display: grid; grid-template-columns: 1fr 52px 76px; gap: 6px; }
-.inline-edit-actions { display: flex; gap: 6px; margin-top: 4px; }
-.btn-save-inline { flex:1; background: var(--terra); color: white; border: none; border-radius: var(--radius-sm); padding: 8px; font-size: 12px; font-family: inherit; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
-.btn-cancel-inline { background: var(--parch-d); color: var(--muted); border: none; border-radius: var(--radius-sm); padding: 8px 14px; font-size: 12px; font-family: inherit; cursor: pointer; }
-
 /* RESPONSIVE */
 @media(max-width:480px){
   .stats-row,.food-stats{grid-template-columns:repeat(3,1fr);}
@@ -296,7 +288,15 @@ select.inp{cursor:pointer;}
           <option>Pending</option><option>Yes</option><option>No</option><option>Maybe</option>
         </select>
       </div>
-      <input class="inp" id="gf-note" placeholder="Note (optional)">
+      <div class="form-row-2">
+        <div>
+          <div style="font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Max guests</div>
+          <input class="inp" id="gf-max-guests" type="number" min="1" max="20" placeholder="1" value="1">
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <input class="inp" id="gf-note" placeholder="Note (optional)">
+        </div>
+      </div>
     </div>
     <div class="form-actions">
       <button class="btn btn-terra" style="flex:1" id="gf-save" onclick="saveGuest()">Save</button>
@@ -613,92 +613,54 @@ function renderGuests() {
 }
 
 function guestCardHtml(g) {
-  const addr=[g.address,g.city,g.state,g.zip].filter(Boolean).join(', ');
-  const updated=g.updated_at?new Date(g.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-
-  // Inline edit mode
-  if (editingGuest === g.id) {
-    return `<div class="card editing">
+    const addr=[g.address,g.city,g.state,g.zip].filter(Boolean).join(', ');
+    const updated=g.updated_at?new Date(g.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+    return `<div class="card">
       <div class="card-icon card-icon-guest">${esc(g.name).charAt(0).toUpperCase()}</div>
-      <div class="card-body" style="width:100%">
-        <div class="inline-edit">
-          <input class="inp" id="ie-name" placeholder="Full name *" value="${esc(g.name)}" style="font-size:13px">
-          <input class="inp" id="ie-addr" placeholder="Street address" value="${esc(g.address||'')}" style="font-size:13px">
-          <div class="inline-edit-row">
-            <input class="inp" id="ie-city" placeholder="City" value="${esc(g.city||'')}" style="font-size:13px">
-            <input class="inp" id="ie-state" placeholder="ST" maxlength="2" value="${esc(g.state||'')}" style="font-size:13px">
-            <input class="inp" id="ie-zip" placeholder="ZIP" value="${esc(g.zip||'')}" style="font-size:13px">
-          </div>
-          <select class="inp" id="ie-rsvp" style="font-size:13px">
-            ${RSVP_OPTS.map(r=>`<option${r===g.rsvp?' selected':''}>${r}</option>`).join('')}
-          </select>
-          <input class="inp" id="ie-note" placeholder="Note (optional)" value="${esc(g.note||'')}" style="font-size:13px">
-          <div class="inline-edit-actions">
-            <button class="btn-save-inline" onclick="saveInlineGuest('${g.id}')">Save</button>
-            <button class="btn-cancel-inline" onclick="closeGuestForm()">Cancel</button>
-          </div>
+      <div class="card-body">
+        <div class="card-name-row">
+          <span class="card-name">${esc(g.name)}</span>
+          <span class="pill pill-${g.rsvp}">${g.rsvp}</span>
+        </div>
+        ${addr?`<div class="card-sub">📍 ${esc(addr)}</div>`:''}
+        ${g.note?`<div class="card-note">"${esc(g.note)}"</div>`:''}
+        ${g.updated_by?`<div class="card-meta">Updated by ${esc(g.updated_by)}${updated?' · '+updated:''}</div>`:''}
+      </div>
+      <div class="card-actions">
+        <select class="status-select" onchange="changeGuestRsvp('${g.id}',this.value)">
+          ${RSVP_OPTS.map(r=>`<option${r===g.rsvp?' selected':''}>${r}</option>`).join('')}
+        </select>
+        <div class="action-row">
+          <button class="icon-btn icon-btn-edit" onclick="openGuestForm('${g.id}')">✏️</button>
+          <button class="icon-btn icon-btn-del" onclick="deleteGuest('${g.id}')">🗑️</button>
         </div>
       </div>
     </div>`;
-  }
-
-  // Normal view mode
-  return `<div class="card">
-    <div class="card-icon card-icon-guest">${esc(g.name).charAt(0).toUpperCase()}</div>
-    <div class="card-body">
-      <div class="card-name-row">
-        <span class="card-name">${esc(g.name)}</span>
-        <span class="pill pill-${g.rsvp}">${g.rsvp}</span>
-      </div>
-      ${addr?`<div class="card-sub">📍 ${esc(addr)}</div>`:''}
-      ${g.note?`<div class="card-note">"${esc(g.note)}"</div>`:''}
-      ${g.updated_by?`<div class="card-meta">Updated by ${esc(g.updated_by)}${updated?' · '+updated:''}</div>`:''}
-    </div>
-    <div class="card-actions">
-      <select class="status-select" onchange="changeGuestRsvp('${g.id}',this.value)">
-        ${RSVP_OPTS.map(r=>`<option${r===g.rsvp?' selected':''}>${r}</option>`).join('')}
-      </select>
-      <div class="action-row">
-        <button class="icon-btn icon-btn-edit" onclick="openGuestForm('${g.id}')">✏️</button>
-        <button class="icon-btn icon-btn-del" onclick="deleteGuest('${g.id}')">🗑️</button>
-      </div>
-    </div>
-  </div>`;
 }
 
 function setGuestFilter(f){activeGuestFilter=f;renderGuests();}
 
 function openGuestForm(id=null){
-  // New guest — use top form
-  if (!id) {
-    editingGuest = null;
-    document.getElementById('gf-title').textContent='New Guest';
-    document.getElementById('gf-save').textContent='Save';
-    document.getElementById('gf-name').value='';
-    document.getElementById('gf-addr').value='';
-    document.getElementById('gf-city').value='';
-    document.getElementById('gf-state').value='';
-    document.getElementById('gf-zip').value='';
-    document.getElementById('gf-rsvp').value='Pending';
-    document.getElementById('gf-note').value='';
-    document.getElementById('guest-form').style.display='block';
-    setTimeout(()=>document.getElementById('gf-name').focus(),60);
-    return;
-  }
-  // Edit existing — inline on card
-  editingGuest = id;
-  renderGuests(); // re-render with inline form shown
+  editingGuest=id;
+  const g=id?guests.find(x=>x.id===id):null;
+  document.getElementById('gf-title').textContent=g?'Edit Guest':'New Guest';
+  document.getElementById('gf-save').textContent=g?'Save Changes':'Save';
+  document.getElementById('gf-name').value=g?.name||'';
+  document.getElementById('gf-addr').value=g?.address||'';
+  document.getElementById('gf-city').value=g?.city||'';
+  document.getElementById('gf-state').value=g?.state||'';
+  document.getElementById('gf-zip').value=g?.zip||'';
+  document.getElementById('gf-rsvp').value=g?.rsvp||'Pending';
+  document.getElementById('gf-note').value=g?.note||'';
+  document.getElementById('guest-form').style.display='block';
+  setTimeout(()=>document.getElementById('gf-name').focus(),60);
 }
-function closeGuestForm(){
-  editingGuest=null;
-  document.getElementById('guest-form').style.display='none';
-  renderGuests();
-}
+function closeGuestForm(){editingGuest=null;document.getElementById('guest-form').style.display='none';}
 
 async function saveGuest(){
   const name=document.getElementById('gf-name').value.trim();
   if(!name){document.getElementById('gf-name').focus();return;}
-  const g={id:editingGuest||('g_'+Date.now()),name,address:document.getElementById('gf-addr').value.trim(),city:document.getElementById('gf-city').value.trim(),state:document.getElementById('gf-state').value.trim().toUpperCase(),zip:document.getElementById('gf-zip').value.trim(),rsvp:document.getElementById('gf-rsvp').value,note:document.getElementById('gf-note').value.trim(),updated_by:currentUser(),updated_at:new Date().toISOString()};
+  const g={id:editingGuest||('g_'+Date.now()),name,address:document.getElementById('gf-addr').value.trim(),city:document.getElementById('gf-city').value.trim(),state:document.getElementById('gf-state').value.trim().toUpperCase(),zip:document.getElementById('gf-zip').value.trim(),rsvp:document.getElementById('gf-rsvp').value,note:document.getElementById('gf-note').value.trim(),max_guests:parseInt(document.getElementById('gf-max-guests').value)||1,guest_count:1,updated_by:currentUser(),updated_at:new Date().toISOString()};
   const wasEditing=editingGuest; closeGuestForm(); setSync('busy','Saving…');
   try {
     if(wasEditing){await db('PATCH',`guests?id=eq.${g.id}`,g);}
