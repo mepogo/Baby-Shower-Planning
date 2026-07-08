@@ -242,9 +242,15 @@ select.inp{cursor:pointer;}
 .inline-edit{padding:10px 0 4px;display:grid;gap:8px;}
 .inline-edit-row{display:grid;grid-template-columns:1fr 52px 76px;gap:6px;}
 .inline-edit-actions{display:flex;gap:6px;margin-top:4px;}
-.btn-save-inline{flex:1;background:var(--terra);color:white;border:none;border-radius:var(--radius-sm);padding:8px;font-size:12px;font-family:inherit;font-weight:500;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;}
+.btn-save-inline{flex:1;background:var(--terra);color:white;border:none;border-radius:var(--radius-sm);padding:8px;font-size:12px;font-family:inherit;font-weight:500;cursor:pointer;}
 .btn-cancel-inline{background:var(--parch-d);color:var(--muted);border:none;border-radius:var(--radius-sm);padding:8px 14px;font-size:12px;font-family:inherit;cursor:pointer;}
-
+/* FAMILY */
+.family-group{margin-bottom:10px;}
+.family-primary{border-left:3px solid var(--terra);border-radius:0 var(--radius) var(--radius) 0;}
+.family-member{background:var(--cream);border-radius:var(--radius);border:1px solid var(--linen-d);padding:10px 14px 10px 52px;margin-top:4px;display:flex;align-items:center;gap:10px;position:relative;}
+.family-member::before{content:'';position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:1px;background:var(--terra-m);}
+.member-avatar{width:28px;height:28px;border-radius:50%;background:var(--olive-l);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--olive);font-weight:600;flex-shrink:0;border:1px solid var(--olive-m);}
+.member-name{font-size:13px;font-weight:500;color:var(--ink);flex:1;}
 /* RESPONSIVE */
 @media(max-width:480px){
   .stats-row,.food-stats{grid-template-columns:repeat(3,1fr);}
@@ -296,13 +302,7 @@ select.inp{cursor:pointer;}
           <option>Pending</option><option>Yes</option><option>No</option><option>Maybe</option>
         </select>
       </div>
-      <div class="form-row-2">
-        <div>
-          <div style="font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Max guests</div>
-          <input class="inp" id="gf-max-guests" type="number" min="1" max="20" placeholder="1" value="1">
-        </div>
-        <input class="inp" id="gf-note" placeholder="Note (optional)" style="align-self:flex-end">
-      </div>
+      <input class="inp" id="gf-note" placeholder="Note (optional)">
     </div>
     <div class="form-actions">
       <button class="btn btn-terra" style="flex:1" id="gf-save" onclick="saveGuest()">Save</button>
@@ -319,6 +319,7 @@ select.inp{cursor:pointer;}
     <input type="text" id="food-search" placeholder="Search dishes…" oninput="renderFood()">
     <button class="btn btn-terra" onclick="openFoodForm()">+ Add</button>
     <button class="btn btn-outline" onclick="refreshAll()">↻</button>
+    <button class="btn btn-outline" onclick="downloadCSV()">⬇ CSV</button>
   </div>
   <div class="form-panel" id="food-form" style="display:none">
     <h3 id="ff-title">New Dish</h3>
@@ -348,6 +349,7 @@ select.inp{cursor:pointer;}
     <input type="text" id="game-search" placeholder="Search games…" oninput="renderGames()">
     <button class="btn btn-terra" onclick="openGameForm()">+ Add</button>
     <button class="btn btn-outline" onclick="refreshAll()">↻</button>
+    <button class="btn btn-outline" onclick="downloadCSV()">⬇ CSV</button>
   </div>
   <div class="form-panel" id="game-form" style="display:none">
     <h3 id="gmf-title">New Game</h3>
@@ -481,6 +483,7 @@ const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZi
 const H = {'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json','Prefer':'return=representation'};
 
 const RSVP_OPTS = ['Pending','Yes','No','Maybe'];
+var RSVP_OPTS_STR = RSVP_OPTS.map(function(r){return '<option>'+r+'</option>';}).join('');
 const FOOD_CATS = ['Appetizers','Mains','Sides','Desserts','Drinks'];
 const GAME_STATUSES = ['Not Started','Ready','Done'];
 const CAT_ICONS = {Appetizers:'🫒',Mains:'🍝',Sides:'🥗',Desserts:'🍮',Drinks:'🍷'};
@@ -580,100 +583,168 @@ function render(){renderGuests();renderFood();renderGames();renderMoodboard();}
 
 // ── GUESTS ────────────────────────────────────────
 function renderGuests() {
-  // Stats
   const c={All:guests.length};
-  RSVP_OPTS.forEach(r=>c[r]=guests.filter(g=>g.rsvp===r).length);
+  RSVP_OPTS.forEach(function(r){c[r]=guests.filter(function(g){return g.rsvp===r;}).length;});
   const items=[{key:'All',label:'Total',cls:'s-all'},{key:'Yes',label:'Coming',cls:'s-yes'},{key:'No',label:"Can't Make It",cls:'s-no'},{key:'Maybe',label:'Maybe',cls:'s-maybe'},{key:'Pending',label:'Pending',cls:'s-pend'}];
-  document.getElementById('guest-stats').innerHTML=items.map(s=>`
-    <div class="stat ${s.cls}${activeGuestFilter===s.key?' active':''}" onclick="setGuestFilter('${s.key}')">
-      <div class="stat-n">${c[s.key]}</div><div class="stat-l">${s.label}</div>
-    </div>`).join('');
-  // List
-  const q=(document.getElementById('guest-search')||{value:''}).value.toLowerCase();
-  const filtered=guests.filter(g=>{
-    const ms=g.name.toLowerCase().includes(q)||(g.city||'').toLowerCase().includes(q)||(g.address||'').toLowerCase().includes(q);
-    return ms&&(activeGuestFilter==='All'||g.rsvp===activeGuestFilter);
-  });
-  const wrap=document.getElementById('guest-list');
+  document.getElementById('guest-stats').innerHTML=items.map(function(s){
+    return '<div class="stat '+s.cls+(activeGuestFilter===s.key?' active':'')+'" onclick="setGuestFilter(\''+s.key+'\')"><div class="stat-n">'+c[s.key]+'</div><div class="stat-l">'+s.label+'</div></div>';
+  }).join('');
+
+  var q=(document.getElementById('guest-search')||{value:''}).value.toLowerCase();
+  var wrap=document.getElementById('guest-list');
   if(!wrap)return;
-  if(!filtered.length){wrap.innerHTML=`<div class="empty"><div class="empty-icon">👥</div><p>${guests.length===0?'No guests yet.':'No guests match your search.'}</p></div>`;return;}
-  // Group by RSVP when showing All
-  let listHtml = '';
-  if (activeGuestFilter === 'All') {
-    const groups = [
-      {label:'Confirmed', rsvp:'Yes', icon:'🫒'},
-      {label:'Maybe', rsvp:'Maybe', icon:'🌿'},
-      {label:"Can't Make It", rsvp:'No', icon:''},
-      {label:'Awaiting Reply', rsvp:'Pending', icon:''},
-    ];
-    groups.forEach(grp => {
-      const grpGuests = filtered.filter(g => g.rsvp === grp.rsvp);
-      if (!grpGuests.length) return;
-      listHtml += `<div style="font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--olive);margin:12px 0 6px 2px;display:flex;align-items:center;gap:6px">${grp.icon?grp.icon+' ':''}${grp.label}<span style="flex:1;height:1px;background:var(--olive-m);display:inline-block;margin-left:4px"></span></div>`;
-      listHtml += '<div class="card-list">' + grpGuests.map(g => guestCardHtml(g)).join('') + '</div>';
+
+  // Build family map
+  var familyMap={};
+  guests.forEach(function(g){
+    var fid=g.family_id||g.id;
+    if(!familyMap[fid])familyMap[fid]=[];
+    familyMap[fid].push(g);
+  });
+
+  // Get unique primaries
+  var seen={};
+  var primaries=[];
+  guests.forEach(function(g){
+    var fid=g.family_id||g.id;
+    var isPrimary=(g.is_primary===true||g.is_primary===null||g.is_primary===undefined||g.family_id===g.id);
+    if(isPrimary&&!seen[fid]){seen[fid]=true;primaries.push(g);}
+  });
+  // Fallback: if no primaries found, treat all as primary
+  if(!primaries.length) primaries=guests.slice();
+
+  // Filter
+  var filtered=primaries.filter(function(g){
+    var fid=g.family_id||g.id;
+    var members=familyMap[fid]||[g];
+    var anyMatch=members.some(function(m){return m.name.toLowerCase().includes(q)||(m.city||'').toLowerCase().includes(q);});
+    var anyRsvp=activeGuestFilter==='All'||members.some(function(m){return m.rsvp===activeGuestFilter;});
+    return anyMatch&&anyRsvp;
+  });
+
+  if(!filtered.length){
+    wrap.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>'+(guests.length===0?'No guests yet.':'No guests match your search.')+'</p></div>';
+    return;
+  }
+
+  var groups=[
+    {label:'Confirmed',rsvp:'Yes',icon:'🫒'},
+    {label:'Maybe',rsvp:'Maybe',icon:'🌿'},
+    {label:"Can't Make It",rsvp:'No',icon:''},
+    {label:'Awaiting Reply',rsvp:'Pending',icon:''},
+  ];
+  var listHtml='';
+  if(activeGuestFilter==='All'){
+    groups.forEach(function(grp){
+      var grpGuests=filtered.filter(function(g){return g.rsvp===grp.rsvp;});
+      if(!grpGuests.length)return;
+      listHtml+='<div style="font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--olive);margin:12px 0 6px 2px;display:flex;align-items:center;gap:6px">'+(grp.icon?grp.icon+' ':'')+grp.label+'<span style="flex:1;height:1px;background:var(--olive-m);display:inline-block;margin-left:4px"></span></div>';
+      grpGuests.forEach(function(g){listHtml+=familyGroupHtml(g,familyMap);});
     });
   } else {
-    listHtml = '<div class="card-list">' + filtered.map(g => guestCardHtml(g)).join('') + '</div>';
+    filtered.forEach(function(g){listHtml+=familyGroupHtml(g,familyMap);});
   }
-  wrap.innerHTML = listHtml + `<div class="foot"><span class="foot-ornament">🌿</span>${guests.length} ${guests.length===1?'guest':'guests'} on the list</div>`;
+  wrap.innerHTML=listHtml+'<div class="foot"><span class="foot-ornament">🌿</span>'+guests.length+' '+(guests.length===1?'guest':'guests')+' on the list</div>';
+}
+
+function pillClass(rsvp){
+  return {Yes:'pill-Yes',No:'pill-No',Maybe:'pill-Maybe',Pending:'pill-Pending'}[rsvp]||'pill-Pending';
+}
+
+function familyGroupHtml(primary,familyMap){
+  var fid=primary.family_id||primary.id;
+  var members=(familyMap[fid]||[primary]).filter(function(m){return m.id!==primary.id;});
+  var html='<div class="family-group">';
+  html+=guestCardHtml(primary,members.length>0);
+  members.forEach(function(m){
+    html+='<div class="family-member">'+
+      '<div class="member-avatar">'+esc(m.name).charAt(0)+'</div>'+
+      '<span class="member-name">'+esc(m.name)+'</span>'+
+      '<span class="pill '+pillClass(m.rsvp)+'">'+m.rsvp+'</span>'+
+      '<div style="display:flex;gap:4px">'+
+        '<button class="icon-btn icon-btn-edit" onclick="openGuestForm(\''+m.id+'\')">✏️</button>'+
+        '<button class="icon-btn icon-btn-del" onclick="deleteGuest(\''+m.id+'\')">🗑️</button>'+
+      '</div>'+
+    '</div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function guestCardHtml(g,hasMembers){
+  hasMembers=hasMembers||false;
+  var addr=[g.address,g.city,g.state,g.zip].filter(Boolean).join(', ');
+  var updated=g.updated_at?new Date(g.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+
+  if(editingGuest===g.id){
+    return '<div class="card editing'+(hasMembers?' family-primary':'')+'">'+
+      '<div class="card-icon card-icon-guest">'+esc(g.name).charAt(0).toUpperCase()+'</div>'+
+      '<div class="card-body" style="width:100%"><div class="inline-edit">'+
+        '<input class="inp" id="ie-name" placeholder="Full name *" value="'+esc(g.name)+'" style="font-size:13px">'+
+        '<input class="inp" id="ie-addr" placeholder="Street address" value="'+esc(g.address||'')+'" style="font-size:13px">'+
+        '<div class="inline-edit-row">'+
+          '<input class="inp" id="ie-city" placeholder="City" value="'+esc(g.city||'')+'" style="font-size:13px">'+
+          '<input class="inp" id="ie-state" placeholder="ST" maxlength="2" value="'+esc(g.state||'')+'" style="font-size:13px">'+
+          '<input class="inp" id="ie-zip" placeholder="ZIP" value="'+esc(g.zip||'')+'" style="font-size:13px">'+
+        '</div>'+
+        '<select class="inp" id="ie-rsvp" style="font-size:13px">'+
+          RSVP_OPTS_STR+
+        '</select>'+
+        '<input class="inp" id="ie-note" placeholder="Note (optional)" value="'+esc(g.note||'')+'" style="font-size:13px">'+
+        '<div class="inline-edit-actions">'+
+          '<button class="btn-save-inline" onclick="saveInlineGuest(\''+g.id+'\')">Save</button>'+
+          '<button class="btn-cancel-inline" onclick="closeGuestForm()">Cancel</button>'+
+        '</div>'+
+      '</div></div></div>';
+  }
+
+  return '<div class="card'+(hasMembers?' family-primary':'')+'">'+
+    '<div class="card-icon card-icon-guest">'+esc(g.name).charAt(0).toUpperCase()+'</div>'+
+    '<div class="card-body">'+
+      '<div class="card-name-row">'+
+        '<span class="card-name">'+esc(g.name)+'</span>'+
+        '<span class="pill '+pillClass(g.rsvp)+'">'+g.rsvp+'</span>'+
+      '</div>'+
+      (addr?'<div class="card-sub">📍 '+esc(addr)+'</div>':'')+
+      (g.note?'<div class="card-note">"'+esc(g.note)+'"</div>':'')+
+      (g.updated_by?'<div class="card-meta">Updated by '+esc(g.updated_by)+(updated?' · '+updated:'')+'</div>':'')+
+    '</div>'+
+    '<div class="card-actions">'+
+      '<select class="status-select" onchange="changeGuestRsvp(\''+g.id+'\',this.value)">'+
+        RSVP_OPTS_STR+
+      '</select>'+
+      '<div class="action-row">'+
+        '<button class="icon-btn icon-btn-edit" onclick="openGuestForm(\''+g.id+'\')">✏️</button>'+
+        '<button class="icon-btn icon-btn-del" onclick="deleteGuest(\''+g.id+'\')">🗑️</button>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
 }
 
 function guestCardHtml(g) {
-  const addr=[g.address,g.city,g.state,g.zip].filter(Boolean).join(', ');
-  const updated=g.updated_at?new Date(g.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-
-  if(editingGuest===g.id){
-    return `<div class="card editing">
+    const addr=[g.address,g.city,g.state,g.zip].filter(Boolean).join(', ');
+    const updated=g.updated_at?new Date(g.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+    return `<div class="card">
       <div class="card-icon card-icon-guest">${esc(g.name).charAt(0).toUpperCase()}</div>
-      <div class="card-body" style="width:100%">
-        <div class="inline-edit">
-          <input class="inp" id="ie-name" placeholder="Full name *" value="${esc(g.name)}" style="font-size:13px">
-          <input class="inp" id="ie-addr" placeholder="Street address" value="${esc(g.address||'')}" style="font-size:13px">
-          <div class="inline-edit-row">
-            <input class="inp" id="ie-city" placeholder="City" value="${esc(g.city||'')}" style="font-size:13px">
-            <input class="inp" id="ie-state" placeholder="ST" maxlength="2" value="${esc(g.state||'')}" style="font-size:13px">
-            <input class="inp" id="ie-zip" placeholder="ZIP" value="${esc(g.zip||'')}" style="font-size:13px">
-          </div>
-          <div class="inline-edit-row" style="grid-template-columns:1fr 90px 90px">
-            <select class="inp" id="ie-rsvp" style="font-size:13px">
-              ${RSVP_OPTS.map(r=>`<option${r===g.rsvp?' selected':''}>${r}</option>`).join('')}
-            </select>
-            <input class="inp" id="ie-max-guests" type="number" min="1" max="20" placeholder="Max" value="${g.max_guests||1}" style="font-size:13px" title="Max guests allowed">
-            <input class="inp" id="ie-guest-count" type="number" min="0" max="20" placeholder="Count" value="${g.guest_count||1}" style="font-size:13px" title="Confirmed count">
-          </div>
-          <input class="inp" id="ie-note" placeholder="Note (optional)" value="${esc(g.note||'')}" style="font-size:13px">
-          <input class="inp" id="ie-party" placeholder="Party members e.g. Sofia, Mia" value="${esc(g.party_members||'')}" style="font-size:13px">
-          <div class="inline-edit-actions">
-            <button class="btn-save-inline" onclick="saveInlineGuest('${g.id}')">Save</button>
-            <button class="btn-cancel-inline" onclick="closeGuestForm()">Cancel</button>
-          </div>
+      <div class="card-body">
+        <div class="card-name-row">
+          <span class="card-name">${esc(g.name)}</span>
+          <span class="pill pill-${g.rsvp}">${g.rsvp}</span>
+        </div>
+        ${addr?`<div class="card-sub">📍 ${esc(addr)}</div>`:''}
+        ${g.note?`<div class="card-note">"${esc(g.note)}"</div>`:''}
+        ${g.updated_by?`<div class="card-meta">Updated by ${esc(g.updated_by)}${updated?' · '+updated:''}</div>`:''}
+      </div>
+      <div class="card-actions">
+        <select class="status-select" onchange="changeGuestRsvp('${g.id}',this.value)">
+          ${RSVP_OPTS.map(r=>`<option${r===g.rsvp?' selected':''}>${r}</option>`).join('')}
+        </select>
+        <div class="action-row">
+          <button class="icon-btn icon-btn-edit" onclick="openGuestForm('${g.id}')">✏️</button>
+          <button class="icon-btn icon-btn-del" onclick="deleteGuest('${g.id}')">🗑️</button>
         </div>
       </div>
     </div>`;
-  }
-
-  return `<div class="card">
-    <div class="card-icon card-icon-guest">${esc(g.name).charAt(0).toUpperCase()}</div>
-    <div class="card-body">
-      <div class="card-name-row">
-        <span class="card-name">${esc(g.name)}</span>
-        <span class="pill pill-${g.rsvp}">${g.rsvp}</span>
-      </div>
-      ${addr?`<div class="card-sub">📍 ${esc(addr)}</div>`:''}
-      ${(g.max_guests&&g.max_guests>1)?`<div class="card-sub">👥 Up to ${g.max_guests} guests${g.guest_count>1?' · '+g.guest_count+' confirmed':''}</div>`:''}
-      ${g.note?`<div class="card-note">"${esc(g.note)}"</div>`:''}
-      ${g.updated_by?`<div class="card-meta">Updated by ${esc(g.updated_by)}${updated?' · '+updated:''}</div>`:''}
-    </div>
-    <div class="card-actions">
-      <select class="status-select" onchange="changeGuestRsvp('${g.id}',this.value)">
-        ${RSVP_OPTS.map(r=>`<option${r===g.rsvp?' selected':''}>${r}</option>`).join('')}
-      </select>
-      <div class="action-row">
-        <button class="icon-btn icon-btn-edit" onclick="openGuestForm('${g.id}')">✏️</button>
-        <button class="icon-btn icon-btn-del" onclick="deleteGuest('${g.id}')">🗑️</button>
-      </div>
-    </div>
-  </div>`;
 }
 
 function setGuestFilter(f){activeGuestFilter=f;renderGuests();}
@@ -683,16 +754,10 @@ function openGuestForm(id=null){
     editingGuest=null;
     document.getElementById('gf-title').textContent='New Guest';
     document.getElementById('gf-save').textContent='Save';
-    document.getElementById('gf-name').value='';
-    document.getElementById('gf-addr').value='';
-    document.getElementById('gf-city').value='';
-    document.getElementById('gf-state').value='';
-    document.getElementById('gf-zip').value='';
+    ['gf-name','gf-addr','gf-city','gf-state','gf-zip','gf-note'].forEach(function(k){document.getElementById(k).value='';});
     document.getElementById('gf-rsvp').value='Pending';
-    document.getElementById('gf-note').value='';
-    document.getElementById('gf-max-guests').value='1';
     document.getElementById('guest-form').style.display='block';
-    setTimeout(()=>document.getElementById('gf-name').focus(),60);
+    setTimeout(function(){document.getElementById('gf-name').focus();},60);
     return;
   }
   editingGuest=id;
@@ -707,7 +772,7 @@ function closeGuestForm(){
 async function saveGuest(){
   const name=document.getElementById('gf-name').value.trim();
   if(!name){document.getElementById('gf-name').focus();return;}
-  const g={id:editingGuest||('g_'+Date.now()),name,address:document.getElementById('gf-addr').value.trim(),city:document.getElementById('gf-city').value.trim(),state:document.getElementById('gf-state').value.trim().toUpperCase(),zip:document.getElementById('gf-zip').value.trim(),rsvp:document.getElementById('gf-rsvp').value,note:document.getElementById('gf-note').value.trim(),max_guests:parseInt(document.getElementById('gf-max-guests').value)||1,guest_count:1,updated_by:currentUser(),updated_at:new Date().toISOString()};
+  const g={id:editingGuest||('g_'+Date.now()),name,address:document.getElementById('gf-addr').value.trim(),city:document.getElementById('gf-city').value.trim(),state:document.getElementById('gf-state').value.trim().toUpperCase(),zip:document.getElementById('gf-zip').value.trim(),rsvp:document.getElementById('gf-rsvp').value,note:document.getElementById('gf-note').value.trim(),updated_by:currentUser(),updated_at:new Date().toISOString()};
   const wasEditing=editingGuest; closeGuestForm(); setSync('busy','Saving…');
   try {
     if(wasEditing){await db('PATCH',`guests?id=eq.${g.id}`,g);}
@@ -719,38 +784,35 @@ async function saveGuest(){
 }
 
 async function saveInlineGuest(id){
-  const name=document.getElementById('ie-name').value.trim();
+  var name=document.getElementById('ie-name').value.trim();
   if(!name){document.getElementById('ie-name').focus();return;}
-  const g={
-    id,name,
+  var orig=guests.find(function(x){return x.id===id;})||{};
+  var g=Object.assign({},orig,{
+    id:id,name:name,
     address:document.getElementById('ie-addr').value.trim(),
     city:document.getElementById('ie-city').value.trim(),
     state:document.getElementById('ie-state').value.trim().toUpperCase(),
     zip:document.getElementById('ie-zip').value.trim(),
     rsvp:document.getElementById('ie-rsvp').value,
     note:document.getElementById('ie-note').value.trim(),
-    party_members:document.getElementById('ie-party').value.trim(),
-    max_guests:parseInt(document.getElementById('ie-max-guests').value)||1,
-    guest_count:parseInt(document.getElementById('ie-guest-count').value)||1,
-    updated_by:currentUser(),
-    updated_at:new Date().toISOString()
-  };
+    updated_by:currentUser(),updated_at:new Date().toISOString()
+  });
   editingGuest=null;
-  guests=guests.map(x=>x.id===id?g:x);
+  guests=guests.map(function(x){return x.id===id?g:x;});
   renderGuests();
   setSync('busy','Saving…');
   try{
-    await db('PATCH',`guests?id=eq.${id}`,g);
-    showToast(`${name} updated ✓`);
+    await db('PATCH','guests?id=eq.'+id,g);
+    showToast(name+' updated ✓');
     setSync('ok','Connected · syncs in real time');
   }catch(e){showToast('Save failed');setSync('err','Save failed');}
 }
 
 function downloadCSV(){
   var NL=String.fromCharCode(10);
-  var hdrs='Name,Address,City,State,ZIP,RSVP,Max Guests,Confirmed Count,Note';
+  var hdrs='Name,Address,City,State,ZIP,RSVP,Note';
   var rows=guests.map(function(g){
-    return ['name','address','city','state','zip','rsvp','max_guests','guest_count','note'].map(function(k){
+    return ['name','address','city','state','zip','rsvp','note'].map(function(k){
       return '"'+(g[k]||'').toString().replace(/"/g,'""')+'"';
     }).join(',');
   });
@@ -758,9 +820,7 @@ function downloadCSV(){
   var blob=new Blob([csv],{type:'text/csv'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');
-  a.href=url;
-  a.download='Romans-Baby-Shower-Guests.csv';
-  a.click();
+  a.href=url;a.download='Romans-Baby-Shower-Guests.csv';a.click();
   URL.revokeObjectURL(url);
   showToast('Guest list downloaded');
 }
