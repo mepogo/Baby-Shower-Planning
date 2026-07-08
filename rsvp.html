@@ -279,6 +279,7 @@ async function submitRsvp() {
       updated_at: new Date().toISOString()
     });
     showLoading(false);
+    showStep(3);
     showConfirmation();
   } catch(e) {
     showLoading(false);
@@ -309,7 +310,6 @@ function showConfirmation() {
   document.getElementById('confirm-icon').textContent = m.icon;
   document.getElementById('confirm-title').textContent = m.title;
   document.getElementById('confirm-msg').innerHTML = m.msg;
-  showStep(3);
 }
 
 function goBack() {
@@ -333,7 +333,7 @@ function showStep(n) {
 
 function showLoading(show) {
   document.getElementById('loading').style.display = show ? 'block' : 'none';
-  document.getElementById('step-2').style.display = show ? 'none' : 'block';
+  document.getElementById('step-2').style.display = show ? 'none' : '';
 }
 
 document.addEventListener('click', function(e) {
