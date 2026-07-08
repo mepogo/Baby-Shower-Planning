@@ -82,6 +82,10 @@ textarea.inp{resize:none;height:86px;line-height:1.5;}
       <textarea class="inp" id="note-inp" placeholder="A message or dietary note for Janae..."></textarea>
     </div>
     <div class="error-msg" id="rsvp-error">Please select a response for at least one person above.</div>
+    <div id="step2-registry" style="display:none;margin:4px 0 14px;padding:16px 0 4px;border-top:1px solid var(--linen-d);text-align:center">
+      <p style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);margin-bottom:12px">Celebrating with a gift?</p>
+      <a href="https://my.babylist.com/the-guevara-baby" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--olive-l);color:var(--olive);border:1.5px solid var(--olive-m);border-radius:var(--radius-sm);padding:12px 24px;font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">🎁 View Registry</a>
+    </div>
     <button class="btn btn-terra" onclick="submitRsvp()">Send my RSVP</button>
     <button class="btn btn-outline" onclick="goBack()" style="margin-top:6px">That is not me</button>
   </div>
@@ -90,6 +94,11 @@ textarea.inp{resize:none;height:86px;line-height:1.5;}
     <div class="confirm-icon" id="confirm-icon">🎉</div>
     <div class="confirm-title" id="confirm-title">Thank you!</div>
     <p class="confirm-msg" id="confirm-msg"></p>
+    <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--linen-d);text-align:center">
+      <p style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);margin-bottom:12px">Celebrating with a gift?</p>
+      <a href="https://my.babylist.com/the-guevara-baby" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--olive-l);color:var(--olive);border:1.5px solid var(--olive-m);border-radius:var(--radius-sm);padding:12px 24px;font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">🎁 View Registry</a>
+      <p style="font-size:12px;color:var(--hint);margin-top:14px;line-height:1.6">💡 Bookmark this page to view the registry anytime</p>
+    </div>
   </div>
 
   <div id="loading" style="display:none"><div class="spinner"></div></div>
@@ -199,12 +208,15 @@ function selectGuest(id) {
   // Show a returning-guest banner
   var banner = document.getElementById('returning-banner');
   var prompt = document.getElementById('step2-prompt');
+  var step2reg = document.getElementById('step2-registry');
   if(alreadyResponded){
     banner.style.display='block';
     prompt.innerHTML='You can update your response below if anything has changed.';
+    if(step2reg) step2reg.style.display='block';
   } else {
     banner.style.display='none';
     prompt.innerHTML='Will you be joining us?';
+    if(step2reg) step2reg.style.display='none';
   }
 }
 
