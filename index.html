@@ -657,18 +657,54 @@ function familyGroupHtml(primary,familyMap){
   var html='<div class="family-group">';
   html+=guestCardHtml(primary,members.length>0);
   members.forEach(function(m){
-    html+='<div class="family-member">'+
-      '<div class="member-avatar">'+esc(m.name).charAt(0)+'</div>'+
-      '<span class="member-name">'+esc(m.name)+'</span>'+
-      '<span class="pill '+pillClass(m.rsvp)+'">'+m.rsvp+'</span>'+
-      '<div style="display:flex;gap:4px">'+
-        '<button class="icon-btn icon-btn-edit" onclick="openGuestForm(\''+m.id+'\')">✏️</button>'+
-        '<button class="icon-btn icon-btn-del" onclick="deleteGuest(\''+m.id+'\')">🗑️</button>'+
-      '</div>'+
-    '</div>';
+    if(editingGuest===m.id){
+      html+='<div class="family-member" style="padding:12px 14px;display:block">'+
+        '<div class="inline-edit">'+
+          '<input class="inp" id="ie-name" placeholder="Full name *" value="'+esc(m.name)+'" style="font-size:13px">'+
+          '<select class="inp" id="ie-rsvp" style="font-size:13px">'+RSVP_OPTS.map(function(r){return '<option'+(r===m.rsvp?' selected':'')+'>'+r+'</option>';}).join('')+'</select>'+
+          '<input class="inp" id="ie-note" placeholder="Note (optional)" value="'+esc(m.note||'')+'" style="font-size:13px">'+
+          '<div class="inline-edit-actions">'+
+            '<button class="btn-save-inline" onclick="saveInlineMember(\''+m.id+'\')">Save</button>'+
+            '<button class="btn-cancel-inline" onclick="closeGuestForm()">Cancel</button>'+
+          '</div>'+
+        '</div></div>';
+    } else {
+      html+='<div class="family-member">'+
+        '<div class="member-avatar">'+esc(m.name).charAt(0)+'</div>'+
+        '<span class="member-name">'+esc(m.name)+'</span>'+
+        '<select class="status-select" style="font-size:11px;padding:4px 8px" onchange="changeGuestRsvp(\''+m.id+'\',this.value)">'+
+          RSVP_OPTS.map(function(r){return '<option'+(r===m.rsvp?' selected':'')+'>'+r+'</option>';}).join('')+
+        '</select>'+
+        '<div style="display:flex;gap:4px">'+
+          '<button class="icon-btn icon-btn-edit" onclick="openGuestForm(\''+m.id+'\')">✏️</button>'+
+          '<button class="icon-btn icon-btn-del" onclick="deleteGuest(\''+m.id+'\')">🗑️</button>'+
+        '</div>'+
+      '</div>';
+    }
   });
   html+='</div>';
   return html;
+}
+
+async function saveInlineMember(id){
+  var name=document.getElementById('ie-name').value.trim();
+  if(!name){document.getElementById('ie-name').focus();return;}
+  var orig=guests.find(function(x){return x.id===id;})||{};
+  var g=Object.assign({},orig,{
+    id:id,name:name,
+    rsvp:document.getElementById('ie-rsvp').value,
+    note:document.getElementById('ie-note').value.trim(),
+    updated_by:currentUser(),updated_at:new Date().toISOString()
+  });
+  editingGuest=null;
+  guests=guests.map(function(x){return x.id===id?g:x;});
+  renderGuests();
+  setSync('busy','Saving…');
+  try{
+    await db('PATCH','guests?id=eq.'+id,g);
+    showToast(name+' updated ✓');
+    setSync('ok','Connected · syncs in real time');
+  }catch(e){showToast('Save failed');setSync('err','Save failed');}
 }
 
 function guestCardHtml(g,hasMembers){
@@ -688,7 +724,7 @@ function guestCardHtml(g,hasMembers){
           '<input class="inp" id="ie-zip" placeholder="ZIP" value="'+esc(g.zip||'')+'" style="font-size:13px">'+
         '</div>'+
         '<select class="inp" id="ie-rsvp" style="font-size:13px">'+
-          RSVP_OPTS_STR+
+          RSVP_OPTS.map(function(r){return '<option'+(r===g.rsvp?' selected':'')+'>'+r+'</option>';}).join('')+
         '</select>'+
         '<input class="inp" id="ie-note" placeholder="Note (optional)" value="'+esc(g.note||'')+'" style="font-size:13px">'+
         '<div class="inline-edit-actions">'+
@@ -711,7 +747,7 @@ function guestCardHtml(g,hasMembers){
     '</div>'+
     '<div class="card-actions">'+
       '<select class="status-select" onchange="changeGuestRsvp(\''+g.id+'\',this.value)">'+
-        RSVP_OPTS_STR+
+        RSVP_OPTS.map(function(r){return '<option'+(r===g.rsvp?' selected':'')+'>'+r+'</option>';}).join('')+
       '</select>'+
       '<div class="action-row">'+
         '<button class="icon-btn icon-btn-edit" onclick="openGuestForm(\''+g.id+'\')">✏️</button>'+
@@ -721,31 +757,7 @@ function guestCardHtml(g,hasMembers){
   '</div>';
 }
 
-function guestCardHtml(g) {
-    const addr=[g.address,g.city,g.state,g.zip].filter(Boolean).join(', ');
-    const updated=g.updated_at?new Date(g.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-    return `<div class="card">
-      <div class="card-icon card-icon-guest">${esc(g.name).charAt(0).toUpperCase()}</div>
-      <div class="card-body">
-        <div class="card-name-row">
-          <span class="card-name">${esc(g.name)}</span>
-          <span class="pill pill-${g.rsvp}">${g.rsvp}</span>
-        </div>
-        ${addr?`<div class="card-sub">📍 ${esc(addr)}</div>`:''}
-        ${g.note?`<div class="card-note">"${esc(g.note)}"</div>`:''}
-        ${g.updated_by?`<div class="card-meta">Updated by ${esc(g.updated_by)}${updated?' · '+updated:''}</div>`:''}
-      </div>
-      <div class="card-actions">
-        <select class="status-select" onchange="changeGuestRsvp('${g.id}',this.value)">
-          ${RSVP_OPTS.map(r=>`<option${r===g.rsvp?' selected':''}>${r}</option>`).join('')}
-        </select>
-        <div class="action-row">
-          <button class="icon-btn icon-btn-edit" onclick="openGuestForm('${g.id}')">✏️</button>
-          <button class="icon-btn icon-btn-del" onclick="deleteGuest('${g.id}')">🗑️</button>
-        </div>
-      </div>
-    </div>`;
-}
+
 
 function setGuestFilter(f){activeGuestFilter=f;renderGuests();}
 
