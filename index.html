@@ -642,6 +642,7 @@ function guestCardHtml(g) {
             <input class="inp" id="ie-guest-count" type="number" min="0" max="20" placeholder="Count" value="${g.guest_count||1}" style="font-size:13px" title="Confirmed count">
           </div>
           <input class="inp" id="ie-note" placeholder="Note (optional)" value="${esc(g.note||'')}" style="font-size:13px">
+          <input class="inp" id="ie-party" placeholder="Party members e.g. Sofia, Mia" value="${esc(g.party_members||'')}" style="font-size:13px">
           <div class="inline-edit-actions">
             <button class="btn-save-inline" onclick="saveInlineGuest('${g.id}')">Save</button>
             <button class="btn-cancel-inline" onclick="closeGuestForm()">Cancel</button>
@@ -728,6 +729,7 @@ async function saveInlineGuest(id){
     zip:document.getElementById('ie-zip').value.trim(),
     rsvp:document.getElementById('ie-rsvp').value,
     note:document.getElementById('ie-note').value.trim(),
+    party_members:document.getElementById('ie-party').value.trim(),
     max_guests:parseInt(document.getElementById('ie-max-guests').value)||1,
     guest_count:parseInt(document.getElementById('ie-guest-count').value)||1,
     updated_by:currentUser(),
