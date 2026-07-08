@@ -73,7 +73,9 @@ textarea.inp{resize:none;height:86px;line-height:1.5;}
   </div>
 
   <div class="step" id="step-2">
-    <p style="font-size:15px;color:var(--muted);margin-bottom:14px">Hi <strong id="guest-name-display" style="color:var(--ink)"></strong> Will you be joining us?</p>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:6px">Hi <strong id="guest-name-display" style="color:var(--ink)"></strong></p>
+    <div id="returning-banner" style="display:none;background:var(--olive-l);border:1px solid var(--olive-m);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--olive)">✓ You've already RSVP'd — thanks! Your current response is shown below.</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:14px" id="step2-prompt">Will you be joining us?</p>
     <div id="party-rsvp-list"></div>
     <div style="margin-top:16px">
       <label class="field-label" for="note-inp">Leave a note <span style="opacity:.6">(optional)</span></label>
@@ -182,13 +184,28 @@ function selectGuest(id) {
   });
 
   selectedFamily = family.map(function(g){
-    return {guest:g, rsvp: null};
+    return {guest:g, rsvp: (g.rsvp&&g.rsvp!=='Pending') ? g.rsvp : null};
   });
+
+  // Has anyone in the family already responded?
+  var alreadyResponded = selectedFamily.some(function(item){return item.rsvp!==null;});
 
   if(primaryGuest.note) document.getElementById('note-inp').value = primaryGuest.note;
   renderList();
   showStep(2);
-  document.getElementById('guest-name-display').textContent = primaryGuest.name.split(' ')[0]+' \uD83D\uDC4B';
+  var greeting = primaryGuest.name.split(' ')[0]+' \uD83D\uDC4B';
+  document.getElementById('guest-name-display').textContent = greeting;
+
+  // Show a returning-guest banner
+  var banner = document.getElementById('returning-banner');
+  var prompt = document.getElementById('step2-prompt');
+  if(alreadyResponded){
+    banner.style.display='block';
+    prompt.innerHTML='You can update your response below if anything has changed.';
+  } else {
+    banner.style.display='none';
+    prompt.innerHTML='Will you be joining us?';
+  }
 }
 
 function renderList() {
